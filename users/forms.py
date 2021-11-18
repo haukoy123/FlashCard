@@ -1,5 +1,5 @@
 from django import forms
-from django.forms import fields, models
+from django.forms import fields, models  # REVIEW: import thừa
 from django.forms.widgets import PasswordInput, TextInput
 from users.models import User
 
@@ -8,6 +8,8 @@ class UserForm(forms.ModelForm):
         model = User
         exclude = ['is_superuser', 'last_login', 'is_staff']
 
+    # REVIEW: khi ghi đè, chú ý giữ đúng signature của hàm mình đang ghi đè
+    # hoặc dùng *args, **kwargs
     def save(self, commit):
         self.instance.set_password(self.cleaned_data['password'])
         user = super().save(commit=commit)

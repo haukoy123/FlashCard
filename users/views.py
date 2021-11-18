@@ -6,14 +6,15 @@ from users.forms import UserForm, LoginForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login
-from django.urls.base import reverse_lazy
+from django.urls.base import reverse_lazy  # REVIEW: import thừa
 
 
 
+# REVIEW: def login
 def Login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
-        error = list()
+        error = list()  # REVIEW: biến ko dùng
 
         if form.is_valid():
             username = form.cleaned_data['username']
@@ -23,7 +24,7 @@ def Login(request):
                 login(request, user)
                 return HttpResponse('oke')
             else:
-                form.add_error('__all__', 'tai khoan hoac mat khau khong chinh xac')
+                form.add_error('__all__', 'tai khoan hoac mat khau khong chinh xac')  # REVIEW: sửa tiếng Việt có dấu
     else:
         form = LoginForm()
 
@@ -35,8 +36,8 @@ def AddUser(request):
     if request.method == 'POST':
         form = UserForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save(True)
-            return HttpResponseRedirect(reverse('users:login'))
+            form.save(True)  # REVIEW: save(commit=True), không cần thiết?
+            return HttpResponseRedirect(reverse('users:login'))  # REVIEW: dùng hàm redirect
     else:
         form = UserForm()
     return render(request, 'users/add_user.html', {'form': form})

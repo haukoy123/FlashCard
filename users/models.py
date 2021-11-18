@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser, UserManager
 
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser):  # REVIEW: thừa kế  AbstractUser thì đỡ phải sửa nhiều hơn
     USERNAME_FIELD = "username"
     objects = UserManager()
 
