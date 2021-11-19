@@ -1,9 +1,55 @@
-<!-- REVIEW: tạo template base -->
+{% extends "users/base.html" %}
+{% load static %}
 
-<form action="{% url 'users:register' %}" method="post" enctype="multipart/form-data">
-    {% csrf_token  %}
-    <table>
-        {{ form.as_table }}
-    </table>
-    <input type="submit" value="Submit">
-</form>
+
+{% block head %}
+    <title>Register</title>
+{% endblock %}
+
+{% block content %}
+    <form action="{% url 'users:register' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token  %}
+
+        <div class="d-flex justify-content-left text-center">
+            <div class="col-4">
+                <img id="image" class="bg-white" src="#" width="150px" height="150px"/>
+                <div class="mb-3">
+                    <label for="" class="form-label">Avatar</label>
+                    <div class="col-8 avatar-center">
+                        {{ form.avatar }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 ">
+                <div class="mb-3 row">
+                    <label for="" class="col-3 col-form-label">Username</label>
+                    <div class="col-8">
+                        {{ form.username }}
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="" class="col-3 col-form-label">Email</label>
+                    <div class="col-8">
+                        {{ form.email }}
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="" class="col-3 col-form-label">Password</label>
+                    <div class="col-8">
+                        {{ form.password }}
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="" class="col-3 col-form-label">Confirm Password</label>
+                    <div class="col-8 align-self-center">
+                        <input type="password" name="confirm_password" class="form-control" maxlength="128" required="" id="id_confirm_password">
+                    </div>
+                </div>
+
+                <input class="btn btn-primary col-4" type="submit" value="Đăng ký">
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

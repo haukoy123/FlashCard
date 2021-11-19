@@ -1,2 +1,3 @@
 .venv
-# REVIEW: ignore __pycache__, media
+__pycache__
+media

@@ -1,20 +1,16 @@
-from django.core.exceptions import ValidationError
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.views import generic
 from users.models import User
 from users.forms import UserForm, LoginForm
-from django.http import HttpResponseRedirect, HttpResponse
-from django.urls import reverse
+from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
-from django.urls.base import reverse_lazy  # REVIEW: import thừa
+from django.contrib.auth import logout
 
 
-
-# REVIEW: def login
-def Login(request):
+def LoginView(request):
+    print(request.user.is_authenticated)
     if request.method == 'POST':
         form = LoginForm(request.POST)
-        error = list()  # REVIEW: biến ko dùng
 
         if form.is_valid():
             username = form.cleaned_data['username']
@@ -24,7 +20,7 @@ def Login(request):
                 login(request, user)
                 return HttpResponse('oke')
             else:
-                form.add_error('__all__', 'tai khoan hoac mat khau khong chinh xac')  # REVIEW: sửa tiếng Việt có dấu
+                form.add_error('__all__', 'Tài khoản hoặc mật khẩu không chính xác!')
     else:
         form = LoginForm()
 
@@ -32,13 +28,18 @@ def Login(request):
 
 
 
+def LogoutView(request):
+    logout(request)
+    return render(request, 'users/login.html', {'form': LoginForm()})
+
+
 def AddUser(request):
     if request.method == 'POST':
         form = UserForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save(True)  # REVIEW: save(commit=True), không cần thiết?
-            return HttpResponseRedirect(reverse('users:login'))  # REVIEW: dùng hàm redirect
-    else:
+            form.save()
+            return redirect('users:login')
+
         form = UserForm()
     return render(request, 'users/add_user.html', {'form': form})
 

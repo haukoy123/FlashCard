@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser, UserManager
 
 
 
-class User(AbstractBaseUser):  # REVIEW: thừa kế  AbstractUser thì đỡ phải sửa nhiều hơn
+class User(AbstractBaseUser):
     USERNAME_FIELD = "username"
     objects = UserManager()
 
@@ -14,7 +14,7 @@ class User(AbstractBaseUser):  # REVIEW: thừa kế  AbstractUser thì đỡ ph
     is_superuser = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    avatar_url = models.FileField(null=True, upload_to='images/', blank=True)
+    avatar = models.ImageField(null=True, upload_to='images/', blank=True)
     is_staff = models.BooleanField(default=False)
     
     REQUIRED_FIELDS = ['email']
