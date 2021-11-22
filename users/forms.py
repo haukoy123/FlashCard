@@ -3,6 +3,17 @@ from django.forms.widgets import PasswordInput
 from users.models import User
 
 class UserForm(forms.ModelForm):
+    password = forms.CharField(
+        min_length=6,
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control'},
+        ),
+    )
+    email = forms.EmailField(
+        error_messages={'unique':"Email  đã được đăng kí."},
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
+    )
+
     class Meta:
         model = User
         exclude = ['is_superuser', 'last_login', 'is_staff']
@@ -10,15 +21,14 @@ class UserForm(forms.ModelForm):
             'username': forms.TextInput(attrs={
                 'class': 'form-control'
             }),
-            'email': forms.TextInput(attrs={
-                'class': 'form-control'
-            }),
-            'password': forms.PasswordInput(attrs={
-                'class': 'form-control'
-            }),
             'avatar': forms.FileInput(attrs={
                 'class': 'form-control form-control-sm'
             })
+        }
+        error_messages = {
+            'username': {
+                'unique':"Username đã được đăng kí."
+            }
         }
 
 
@@ -34,6 +44,6 @@ class LoginForm(forms.Form):
     username = forms.CharField(
         max_length=150,
         required=True,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder':'Username'}),
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
-    password = forms.CharField(min_length=6, widget=PasswordInput(attrs={'class': 'form-control', 'placeholder':'Password'}))
+    password = forms.CharField(widget=PasswordInput(attrs={'class': 'form-control'}))

@@ -1,0 +1,173 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block head %}
+    <title>Login</title>
+{% endblock %}
+
+{% block header %}
+    <div class="d-flex justify-content-between mb-3" style="background: #1c58ad;">
+        <div class="p-1">
+            <img src="{% static 'users/images/FlashCardBlue.jpg' %}" alt="" width="80px">
+        </div>
+        <div class="p-3">
+            <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#LoginModal">
+            <div class="clearfix">
+                    <div class="float-start me-1">
+                        <i class="fas fa-sign-in-alt fs-5"></i>
+                    </div>
+                    <div class="float-end">
+                        <span>Đăng nhập</span>
+                    </div>
+            </div>
+            </button>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %}    
+    <div class="modal fade modal-dialog modal-dialog-centered" id='LoginModal' data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Đăng nhập</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body mx-auto">
+                    <form action="" method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label">Username or Email</label>
+                            <div class="col-sm-12">
+                                {{ login_form.username}}
+                                {% if login_form.username.errors %}
+                                    {{ login_form.username.errors }}
+                                {% endif %}
+                                {% if login_form.email.errors %}
+                                    {{ login_form.email.errors }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Password</label>
+                            <div class="col-sm-12">
+                                {{ login_form.password}}
+                                {% if login_form.password.errors %}
+                                    {{ login_form.password.errors }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="mb-3 text-center">
+                            <input class="btn btn-primary col-sm-5" type="submit" value="Đăng nhập">
+                        </div>
+                        {% if login_form.non_field_errors %}
+                            {{ login_form.non_field_errors }}
+                        {% endif %}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#RegisterModal">Đăng ký</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="RegisterModal" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Đăng ký</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form action="{% url 'users:register' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="clearfix">
+                            <div class="float-start w-50 px-4">
+                                <div class="text-center">
+                                    <img id="image" class="bg-white mb-3" src="#" width="150px" height="150px"/>
+                                    <div class="">
+                                        <label for="" class="form-label mb-3">Avatar</label>
+                                        <div class="col-sm-10 mx-auto">
+                                            {{ register_form.avatar }}
+                                            {% if register_form.avatar.errors %}
+                                                {{ register_form.avatar.errors }}
+                                            {% endif %}
+                                        </div>
+                                    </div> 
+                                </div> 
+                            </div>
+                            
+                            <div class="float-end w-50 px-4">
+                                <div class="mb-3">
+                                    <label for="" class="form-label">Username</label>
+                                    <div class="col-sm-12">
+                                        {{ register_form.username}}
+                                        {% if register_form.username.errors %}
+                                            {{ register_form.username.errors }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="" class="form-label">Email</label>
+                                    <div class="col-12">
+                                        {{ register_form.email }}
+                                        {% if register_form.email.errors %}
+                                            {{ register_form.email.errors }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="" class="form-label">Password</label>
+                                    <div class="col-sm-12">
+                                        {{ register_form.password}}
+                                        {% if register_form.password.errors %}
+                                            {{ register_form.password.errors }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="mb-3 text-center">
+                            <input class="btn btn-success col-sm-3" type="submit" value="Đăng ký">
+                            {% if register_form.non_field_errors %}
+                                {{ register_form.non_field_errors }}
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#LoginModal">Đăng nhập</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if login_form.errors %}
+        <script>
+            $(document).ready(function(){
+                $("#LoginModal").modal('show');
+            });
+        </script>
+    {% endif %}
+    {% if register_form.errors %}
+        <script>
+            $(document).ready(function(){
+                $("#RegisterModal").modal('show');
+            });
+        </script>
+    {% endif %}
+    <script>
+        document.getElementById("id_avatar").onchange = function() {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById("image").src = e.target.result;
+            };
+            reader.readAsDataURL(this.files[0]);
+        };
+    </script>
+{% endblock %}
