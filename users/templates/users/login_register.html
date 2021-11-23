@@ -6,9 +6,9 @@
 {% endblock %}
 
 {% block header %}
-    <div class="d-flex justify-content-between mb-3" style="background: #1c58ad;">
-        <div class="p-1">
-            <img src="{% static 'users/images/FlashCardBlue.jpg' %}" alt="" width="80px">
+    <div class="d-flex justify-content-between mb-3" style="background: #004aad;">
+        <div class="my-auto">
+            <img src="{% static 'users/images/Flashcard.png' %}" alt="" width="230px">
         </div>
         <div class="p-3">
             <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#LoginModal">
@@ -26,7 +26,7 @@
 {% endblock %}
 
 
-{% block content %}    
+{% block content %}
     <div class="modal fade modal-dialog modal-dialog-centered" id='LoginModal' data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -36,7 +36,7 @@
                 </div>
 
                 <div class="modal-body mx-auto">
-                    <form action="" method="post">
+                    <form action="{% url 'users:login' %}" method="post">
                         {% csrf_token %}
 
                         <div class="mb-3">
@@ -98,10 +98,10 @@
                                                 {{ register_form.avatar.errors }}
                                             {% endif %}
                                         </div>
-                                    </div> 
-                                </div> 
+                                    </div>
+                                </div>
                             </div>
-                            
+
                             <div class="float-end w-50 px-4">
                                 <div class="mb-3">
                                     <label for="" class="form-label">Username</label>
@@ -147,27 +147,5 @@
             </div>
         </div>
     </div>
-    {% if login_form.errors %}
-        <script>
-            $(document).ready(function(){
-                $("#LoginModal").modal('show');
-            });
-        </script>
-    {% endif %}
-    {% if register_form.errors %}
-        <script>
-            $(document).ready(function(){
-                $("#RegisterModal").modal('show');
-            });
-        </script>
-    {% endif %}
-    <script>
-        document.getElementById("id_avatar").onchange = function() {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById("image").src = e.target.result;
-            };
-            reader.readAsDataURL(this.files[0]);
-        };
-    </script>
+    <script src="{% static 'users/js/login_register.js' %}"></script>
 {% endblock %}

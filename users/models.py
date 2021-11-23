@@ -16,11 +16,13 @@ class User(AbstractBaseUser):
     updated_at = models.DateTimeField(auto_now=True)
     avatar = models.ImageField(null=True, upload_to='images/', blank=True)
     is_staff = models.BooleanField(default=False)
-    
+    is_active = models.BooleanField(default=True)
+
     REQUIRED_FIELDS = ['email']
 
     def __str__(self):
         return self.username
+
 
     def has_perm(self, perm, obj=None):
         return True
