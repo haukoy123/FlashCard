@@ -17,12 +17,15 @@ def LoginView(request):
     # print(request.user.is_authenticated)
     if request.method == 'POST':
         form = LoginForm(request.POST)
+        # REVIEW: đặt tên biến cụ thể hơn. VD: `email_regex`
         regex = re.compile(r"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$")
 
         if regex.match(request.POST['username']):
             try:
                 username = get_user_model().objects.get(email=request.POST['username']).username
                 form = LoginForm({'username':username, 'password': request.POST['password']})
+            # REVIEW: cần bắt exception cụ thể, tránh bắt chung chung thế này.
+            # except User.DoesNotExist
             except Exception as e:
                 form.add_error('__all__', 'Tài khoản hoặc mật khẩu không chính xác!')
 
@@ -80,8 +83,10 @@ def StacksFcView(request):
 
 
 
-@login_required(login_url='users:login')
+@login_required(login_url='users:login')  # REVIEW: `login_url` có thể config ở settings.py
 def ProfileView(request):
+    # REVIEW: nên thêm thông báo cho người dùng khi thành công/thất bại.
+    # Django có hỗ trợ thông báo qua module django.contrib.messages -> tìm hiểu
     if request.method == 'POST':
         user_form = ProfileForm(instance=request.user, data=request.POST, files=request.FILE)
         if user_form.is_valid():
@@ -94,6 +99,7 @@ def ProfileView(request):
 @login_required(login_url='users:login')
 def PasswordChange(request):
     if request.method == 'POST':
+        # REVIEW: nên refactor logic đổi mật khẩu ra view
         form = PasswordChangeForm(instance=request.user, data=request.POST)
         if form.is_valid():
             form.save()

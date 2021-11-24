@@ -54,6 +54,7 @@ class LoginForm(forms.Form):
 
 
 class PasswordChangeForm(forms.Form):
+    # REVIEW: trường hợp này có thể dùng *args, **kwargs để ko phải viết lại quá nhiều
     def __init__(self, data=None, files=None, auto_id='id_%s', prefix=None,
                  initial=None, error_class=ErrorList, label_suffix=None,
                  empty_permitted=False, instance=None, use_required_attribute=None,
