@@ -7,45 +7,73 @@
 {% endblock %}
 
 {% block header %}
-    <div class="d-flex justify-content-between mb-3" style="background: #004aad;">
-        <div class="my-auto">
-            <img src="{% static 'users/images/Flashcard.png' %}" alt="" width="230px">
-        </div>
-        <div class="p-3">
-            {% if request.user.avatar %}
-                <img src="{{ request.user.avatar.url }}" class="rounded-circle me-3" width="38px" height="38px" alt="">
-            {% else %}
-                <img src="{% static 'users/images/FlashCard.png' %}" class="rounded-circle me-3" width="38px" height="38px" alt="">
-            {% endif %}
-            <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#LogoutModal">
-                <div class="clearfix">
-                    <div class="float-start me-1">
-                        <i class="fas fa-sign-out-alt fs-5"></i>
-                    </div>
-                    <div class="float-end">
-                        <span>Đăng xuất</span>
-                    </div>
-                </div>
-            </button>
-        </div>
-    </div>
+    {% include "users/header_logout.html" %}
 {% endblock %}
 
 {% block content %}
-    {% if form.instance.avatar %}
-        <img id='get_avatar' src="{{ form.instance.avatar.url }}" alt="" width='150px'>
-    {% endif %}
-
-
+    <div class="text-center">
+        <span class="h3 fw-bold">Thông tin cá nhân</span>
+    </div>
     <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.username }}
-        {{ form.email }}
-        {{ form.avatar }}
-
-        {{form.errors}}
-        <button type="submit">oke</button>
+        <div class="d-flex justify-content-center my-3">
+            <div class="p-2 mx-3">
+                {% if form.instance.avatar %}
+                    <img id='get_avatar' src="{{ form.instance.avatar.url }}" alt="" width='284px' height="284px">
+                {% else %}
+                    <img id="get_avatar" class="bg-white mb-3" src="" width="284px" height="284px"/>
+                {% endif %}
+                <div class="text-center">Ảnh đại diện</div>
+            </div>
+            <div class="p-2 mt-4 mx-3">
+                <div class="mt-4">
+                    <label for="id_username">Tên đăng nhập:</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        {{ form.username.errors }}
+                    {% endif %}
+                </div>
+                <div class="mt-4">
+                    <label for="id_email">Email:</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        {{ form.email.errors }}
+                    {% endif %}
+                </div>
+                <div class="mt-4">
+                    <label for="id_avatar">Ảnh đại diện</label>
+                    {{ form.avatar }}
+                    {% if form.avatar.errors %}
+                        {{ form.avatar.errors }}
+                    {% endif %}
+                </div>
+            </div>
+          </div>
+          <div class="text-center">
+            {% if form.non_field_errors %}
+                {{ form.non_field_errors }}
+            {% endif %}
+            <button class="btn btn-success col-2" type="submit">Lưu</button>
+          </div>
     </form>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="position-fixed bottom-0 end-0 p-3 messages" style="z-index: 11">
+            <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header" style="background: #004aad;">
+                    <img src="{% static 'users/images/Flashcard.png' %}" class="rounded me-2" width="100px" alt="">
+                    <strong class="me-auto text-white fw-normal"></strong>
+                    <small class="text-white">Vừa xong</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ message }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
 
     <script src="{% static 'users/js/profile.js' %}"></script>
 {% endblock %}

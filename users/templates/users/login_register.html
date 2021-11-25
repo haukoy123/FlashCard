@@ -68,8 +68,11 @@
                         {% endif %}
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#RegisterModal">Đăng ký</button>
+                <div class="modal-footer d-flex justify-content-between mb-3">
+                        <div class="p-2">
+                            <a href="{% url 'users:password_reset' %}">Quên mật khẩu</a>
+                        </div>
+                        <button type="button" class="btn btn-success p-2" data-bs-toggle="modal" data-bs-target="#RegisterModal">Đăng ký</button>
                 </div>
             </div>
         </div>
@@ -147,5 +150,23 @@
             </div>
         </div>
     </div>
+    {% if messages %}
+        {% for message in messages %}
+        <div class="position-fixed bottom-0 end-0 p-3 messages" style="z-index: 10001">
+            <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header" style="background: #004aad;">
+                    <img src="{% static 'users/images/Flashcard.png' %}" class="rounded me-2" width="100px" alt="">
+                    <strong class="me-auto text-white fw-normal"></strong>
+                    <small class="text-white">Vừa xong</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ message }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+
     <script src="{% static 'users/js/login_register.js' %}"></script>
 {% endblock %}

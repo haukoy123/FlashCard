@@ -1,12 +1,16 @@
 $(document).ready(function(){
+    $("#LoginModal").modal('show');
     if ($("#RegisterModal .errorlist").length != 0){
         $("#RegisterModal").modal('show');
     }
     else if ($("#LoginModal .errorlist").length != 0){
         $("#LoginModal").modal('show');
     }
+    
+    if ($(".messages").length != 0){
+        $("#liveToast").toast('show');
+    }
 });
-
 
 $("#id_avatar").on('change', function() {
     $element = $(this);

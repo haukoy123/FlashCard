@@ -1,5 +1,5 @@
 from django.urls import path
-from users import views
+from users import views, forms
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 
@@ -31,6 +31,7 @@ urlpatterns = [
     path(
         'password-reset-confirm/<uidb64>/<token>/',
         auth_views.PasswordResetConfirmView.as_view(
+            form_class = forms.SetPasswordFormCustom,
             template_name='users/password_reset_confirm.html',
             success_url=reverse_lazy('users:password_reset_complete')
         ),

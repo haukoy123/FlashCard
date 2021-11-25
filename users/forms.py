@@ -1,8 +1,10 @@
 from django import forms
-from django.forms.forms import Form
 from django.forms.widgets import PasswordInput
 from users.models import User
-from django.forms.utils import ErrorList
+from django.contrib.auth.forms import SetPasswordForm
+from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
+from django.contrib.auth import  password_validation
 
 
 
@@ -20,7 +22,7 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        exclude = ['is_superuser', 'last_login', 'is_staff']
+        exclude = ['is_superuser', 'last_login', 'is_staff', 'is_active']
         widgets = {
             'username': forms.TextInput(attrs={
                 'class': 'form-control'
@@ -36,8 +38,7 @@ class UserForm(forms.ModelForm):
         }
 
 
-    # REVIEW: khi ghi đè, chú ý giữ đúng signature của hàm mình đang ghi đè
-    # hoặc dùng *args, **kwargs
+
     def save(self, commit=True):
         self.instance.set_password(self.cleaned_data['password'])
         user = super().save(commit=commit)
@@ -54,23 +55,12 @@ class LoginForm(forms.Form):
 
 
 class PasswordChangeForm(forms.Form):
-    # REVIEW: trường hợp này có thể dùng *args, **kwargs để ko phải viết lại quá nhiều
-    def __init__(self, data=None, files=None, auto_id='id_%s', prefix=None,
-                 initial=None, error_class=ErrorList, label_suffix=None,
-                 empty_permitted=False, instance=None, use_required_attribute=None,
-                 renderer=None):
+    def __init__(self, instance=None, *args, **kwargs):
         self.instance = instance
-        super().__init__(data=data, files=files, auto_id=auto_id, prefix=prefix,
-                initial=initial, error_class=error_class, label_suffix=label_suffix,
-                empty_permitted=empty_permitted, use_required_attribute=use_required_attribute, renderer=renderer)
+        super().__init__(*args, **kwargs)
 
     current_password = forms.CharField(widget=PasswordInput(attrs={'class': 'form-control'}))
     password = forms.CharField(widget=PasswordInput(attrs={'class': 'form-control'}))
-
-    def save(self):
-        self.instance.set_password(self.cleaned_data['password'])
-        self.instance.save()
-        return self.instance
 
 
 
@@ -82,7 +72,7 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = User
-        exclude = ['is_superuser', 'last_login', 'is_staff', 'password']
+        exclude = ['is_superuser', 'last_login', 'is_staff', 'password', 'is_active']
         widgets = {
             'username': forms.TextInput(attrs={
                 'class': 'form-control'
@@ -96,3 +86,25 @@ class ProfileForm(forms.ModelForm):
                 'unique':"Username đã được đăng kí."
             }
         }
+
+
+class SetPasswordFormCustom(forms.Form):
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    new_password = forms.CharField(
+        label=_("New password"),
+        widget=forms.PasswordInput(attrs={
+            'autocomplete': 'new-password',
+            'style': 'width: 300px;',
+            'class': 'form-control'
+        }),
+    )
+    def save(self, commit=True):
+        password = self.cleaned_data["new_password"]
+        self.user.set_password(password)
+        if commit:
+            self.user.save()
+        return self.user
+

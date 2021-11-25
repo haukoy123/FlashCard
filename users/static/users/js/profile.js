@@ -9,20 +9,3 @@ $("#id_avatar").on('change', function() {
 
 });
 
-
-
-
-// {% if login_form.errors %}
-// <script>
-//     $(document).ready(function(){
-//         $("#LoginModal").modal('show');
-//     });
-// </script>
-// {% endif %}
-// {% if register_form.errors %}
-// <script>
-//     $(document).ready(function(){
-//         $("#RegisterModal").modal('show');
-//     });
-// </script>
-// {% endif %}

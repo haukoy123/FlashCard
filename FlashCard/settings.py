@@ -141,12 +141,14 @@ AUTH_USER_MODEL = 'users.User'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# REVIEW: ở môi trường dev có thể dùng file system backend,
-# tránh commit email & mật khẩu thật lên git
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.getenv('EMAIL_USER', 'hautran2699@gmail.com')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS', 'hautuong')
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = os.getenv('EMAIL_HOST', '')
+EMAIL_PORT = os.getenv('EMAIL_PORT', '')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', '0') == '1' 
+EMAIL_HOST_USER = os.getenv('EMAIL_USER', 'flashcard@gmail.com')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS', '')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', '0') == '1'
+
+
+LOGIN_URL = 'users:login'
