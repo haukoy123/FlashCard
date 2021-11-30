@@ -6,6 +6,7 @@ from django.urls import reverse
 
 
 class CardGroup(models.Model):
+    # REVIEW: "cardGroups" -> "card_groups"
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='cardGroups')
     name = models.CharField(max_length=50)
     study_duration =models.DurationField(null=True, blank=True)

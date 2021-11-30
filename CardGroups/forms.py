@@ -17,6 +17,7 @@ class CardGroupForm(forms.ModelForm):
         }
 
     def clean_study_duration(self):
+        # REVIEW: đoạn này đọc hơi lạ, lấy "seconds" nhưng lại set vào "minutes"
         study_duration_minute = self.cleaned_data['study_duration'].seconds
         return timedelta(minutes=study_duration_minute)
 

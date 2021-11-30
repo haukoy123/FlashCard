@@ -20,6 +20,7 @@ class CreateCard(generic.CreateView):
         if kwargs['btn'] == 'begin':
             return super().get(request, *args, **kwargs)
         else:
+            # REVIEW: Không cần phải "reverse" khi truyền vào "redirect"
             return redirect(reverse('cards:create_card', args=[self.kwargs['pk'], 'begin']))
 
     def get_success_url(self):
@@ -29,11 +30,13 @@ class CreateCard(generic.CreateView):
             return reverse('cardgroups:learn')
 
     def get_context_data(self, **kwargs):
+        # REVIEW: đoạn try/except dưới đây có thể sử dụng hàm get_object_or_404
         try:
             group = CardGroup.objects.get(id=self.kwargs['pk'], user_id=self.request.user.pk)
         except CardGroup.DoesNotExist as e:
             raise Http404("Không tìm thấy chồng card nào")
         kwargs['group'] = group
+        # REVIEW: không cần đoạn if dưới đây vì đã có trong hàm super rồi
         if self.extra_context is not None:
             kwargs.update(self.extra_context)
         return super().get_context_data(**kwargs)
