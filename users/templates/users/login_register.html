@@ -1,4 +1,4 @@
-{% extends "users/base.html" %}
+{% extends "public/base.html" %}
 {% load static %}
 
 {% block head %}
@@ -6,23 +6,7 @@
 {% endblock %}
 
 {% block header %}
-    <div class="d-flex justify-content-between mb-3" style="background: #004aad;">
-        <div class="my-auto">
-            <img src="{% static 'users/images/Flashcard.png' %}" alt="" width="230px">
-        </div>
-        <div class="p-3">
-            <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#LoginModal">
-            <div class="clearfix">
-                    <div class="float-start me-1">
-                        <i class="fas fa-sign-in-alt fs-5"></i>
-                    </div>
-                    <div class="float-end">
-                        <span>Đăng nhập</span>
-                    </div>
-            </div>
-            </button>
-        </div>
-    </div>
+{% include "public/header_login.html" %}
 {% endblock %}
 
 
@@ -150,23 +134,6 @@
             </div>
         </div>
     </div>
-    {% if messages %}
-        {% for message in messages %}
-        <div class="position-fixed bottom-0 end-0 p-3 messages" style="z-index: 10001">
-            <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header" style="background: #004aad;">
-                    <img src="{% static 'users/images/Flashcard.png' %}" class="rounded me-2" width="100px" alt="">
-                    <strong class="me-auto text-white fw-normal"></strong>
-                    <small class="text-white">Vừa xong</small>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    {{ message }}
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    {% endif %}
 
     <script src="{% static 'users/js/login_register.js' %}"></script>
 {% endblock %}

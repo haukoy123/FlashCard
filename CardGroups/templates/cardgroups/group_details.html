@@ -1,0 +1,21 @@
+{% extends "public/base.html" %}
+
+{% load static %}
+
+{% block head %}
+    <title>Chi tiết chồng Card</title>
+{% endblock%}
+
+{% block header %}
+    {% include "public/header_logout.html" %}
+{% endblock %}
+
+{% block content %}
+<div style="margin-top: 100px;">
+    {% if cardgroup %}
+        {{ cardgroup.name }}
+    {% else %}
+        <span>khong co du lieu</span>
+    {% endif %}
+</div>
+{% endblock%}

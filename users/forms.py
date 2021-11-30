@@ -101,10 +101,18 @@ class SetPasswordFormCustom(forms.Form):
             'class': 'form-control'
         }),
     )
+
+    def clean_new_password(self):
+        new_password = self.cleaned_data['new_password']
+        password_validation.validate_password(new_password, self.user)
+        return new_password
+
+        
     def save(self, commit=True):
         password = self.cleaned_data["new_password"]
         self.user.set_password(password)
         if commit:
             self.user.save()
         return self.user
+
 

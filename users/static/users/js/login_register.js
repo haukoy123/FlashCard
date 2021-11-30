@@ -6,10 +6,6 @@ $(document).ready(function(){
     else if ($("#LoginModal .errorlist").length != 0){
         $("#LoginModal").modal('show');
     }
-    
-    if ($(".messages").length != 0){
-        $("#liveToast").toast('show');
-    }
 });
 
 $("#id_avatar").on('change', function() {

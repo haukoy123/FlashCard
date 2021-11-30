@@ -1,0 +1,43 @@
+{% load static %}
+
+<div class="fixed-top">
+    <div class="d-flex justify-content-between mb-3" style="background: #004aad;">
+        <div class="my-auto">
+            <img src="{% static 'public/images/Flashcard.png' %}" alt="" width="230px">
+        </div>
+        <div class="p-3">
+            <div class="dropdown d-inline-block">
+                <button class="btn p-0" style="box-shadow: 0 0 0 0;" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% if request.user.avatar %}
+                        <img src="{{ request.user.avatar.url }}" class="rounded-circle me-3" width="38px" height="38px" alt="">
+                    {% else %}
+                        <img src="{% static 'public/images/FlashCard.png' %}" class="rounded-circle me-3" width="38px" height="38px" alt="">
+                    {% endif %}
+                </button>
+            
+                <ul class="dropdown-menu bg-info pb-0" style="font-family: din-round,sans-serif;" aria-labelledby="dropdownMenu">
+                    <li class=""><span class="p-3 fw-bold">{{ request.user.username }}</span></li>
+                    <li><hr class="dropdown-divider m-0"></li>
+                    <li class="bg-light"><a class="dropdown-item" href="{% url 'users:profile' %}">Hồ sơ</a></li>
+                    <li class="bg-light"><a class="dropdown-item" href="{% url 'cardgroups:learn' %}">Trang chủ</a></li>
+                    <li class="bg-light"><a class="dropdown-item" href="{% url 'users:password-change' %}">Đổi mật khẩu</a></li>
+                    <li><hr class="dropdown-divider m-0"></li>
+                    <li class="bg-light"><a class="dropdown-item fw-bold" data-bs-toggle="modal" data-bs-target="#LogoutModal" href="{% url 'users:logout' %}">Đăng xuất</a></li>
+                </ul>
+            </div>
+           
+            <button type="button" class="btn" 
+                    style="background: #0c0c8a; color: white; border: 0px;"
+                    data-bs-toggle="modal" data-bs-target="#LogoutModal">
+                <div class="clearfix">
+                    <div class="float-start me-1">
+                        <i class="fas fa-sign-out-alt fs-5"></i>
+                    </div>
+                    <div class="float-end">
+                        <span>Đăng xuất</span>
+                    </div>
+                </div>
+            </button>
+        </div>
+    </div>
+</div>

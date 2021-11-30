@@ -1,0 +1,39 @@
+{% extends "public/base.html" %}
+
+{% load static %}
+
+{% block head %}
+    <title>Tạo chồng mới</title>
+{% endblock%}
+
+{% block header %}
+    {% include "public/header_logout.html" %}
+{% endblock %}
+
+{% block content %} 
+<div style="margin-top: 100px;">
+    <div class="text-center mb-3">
+        <span class="h3 fw-bold">Card mới</span>
+    </div>  
+    <form method="post" class="col-7 mx-auto">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_card_group">Chồng:</label>
+            <span class="fw-bold h4">{{ group.name }}</span>
+        </div>
+        <input type="hidden" id="id_card_group" name="card_group" value="{{ group.pk }}"> 
+        <div class="mb-3">
+            <label for="id_front">Mặt trước:</label>
+            {{ form.front }}
+        </div>
+        <div class="mb-3">
+            <label for="id_front">Mặt sau:</label>
+            {{ form.back }}
+        </div>
+        <div class="text-center ">
+            <button formaction="{% url 'cards:create_card' pk=group.pk btn='continue' %}" type="submit" class="btn bg-primary col-3 text-white">Thêm card</button>
+            <button formaction="{% url 'cards:create_card' pk=group.pk btn='done' %}" type="submit" class="btn bg-success col-3 text-white">Xong</button>
+        </div>
+    </form>
+</div>
+{% endblock%}

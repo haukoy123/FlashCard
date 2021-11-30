@@ -1,0 +1,31 @@
+body {
+    background-color: #d8d8d8;
+    font-family: din-round,sans-serif;
+}
+
+.login_form {
+    background: #d8d8d8;
+    padding-bottom: 40px;
+}
+
+.avatar-center {
+    margin: auto;
+}
+
+.errorlist {
+    color: red;
+    font-size: 15px;
+}
+
+
+.card-group {
+    margin: 5px;
+    background: #00b4d463;
+    box-shadow: 3px 3px #ffeb3b, 6px 6px #4caf50, 9px 9px #ff57229e, 12px 12px 5px #2f2f2f;
+}
+.create-group {
+    background: #8500ffeb;
+    text-decoration: none;
+    color: #fffcfc;
+    border-radius: 20px 0px 0px 20px;
+}

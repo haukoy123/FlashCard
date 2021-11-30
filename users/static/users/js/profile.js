@@ -8,4 +8,3 @@ $("#id_avatar").on('change', function() {
     reader.readAsDataURL($element[0].files[0]);
 
 });
-

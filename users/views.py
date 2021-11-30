@@ -26,7 +26,7 @@ def LoginView(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, 'Đăng nhập thành công.')
-                return redirect('users:learn')
+                return redirect('cardgroups:learn')
             else:
                 messages.error(request, 'Đăng nhập thất bại.')
                 form.add_error('__all__', 'Tài khoản hoặc mật khẩu không chính xác!')
@@ -55,7 +55,7 @@ def AddUser(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, 'Đăng kí tài khoản thành công.')
-            return redirect('users:learn')
+            return redirect('cardgroups:learn')
         else:
             messages.error(request, 'Đăng kí tài khoản thất bại.')
     else:
@@ -70,11 +70,6 @@ def LoginRegisterForm(request, register_form = UserForm(), login_form = LoginFor
         }
     )
 
-
-
-@login_required()
-def StacksFcView(request):
-    return render(request,'users/stacks_flash_cards.html')
 
 
 
@@ -105,7 +100,7 @@ def PasswordChange(request):
                 user.save()
                 update_session_auth_hash(request, user)
                 messages.success(request, 'Thay đổi mật khẩu thành công.')
-                return redirect('users:learn')
+                return redirect('cardgroups:learn')
             else:
                 messages.error(request, 'Thay đổi mật khẩu thất bại.')
                 form.add_error('current_password', 'Mật khẩu không đúng')
