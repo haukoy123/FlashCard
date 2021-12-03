@@ -20,8 +20,8 @@
         <div class="mb-3">
             <label for="id_card_group">Chồng:</label>
             <span class="fw-bold h4">{{ group.name }}</span>
+            <span class="float-end">Số card: {{ group.card_count }}</span>
         </div>
-        <input type="hidden" id="id_card_group" name="card_group" value="{{ group.pk }}"> 
         <div class="mb-3">
             <label for="id_front">Mặt trước:</label>
             {{ form.front }}
@@ -30,10 +30,13 @@
             <label for="id_front">Mặt sau:</label>
             {{ form.back }}
         </div>
-        <div class="text-center ">
+        <div class="text-center">
             <button formaction="{% url 'cards:create_card' pk=group.pk btn='continue' %}" type="submit" class="btn bg-primary col-3 text-white">Thêm card</button>
-            <button formaction="{% url 'cards:create_card' pk=group.pk btn='done' %}" type="submit" class="btn bg-success col-3 text-white">Xong</button>
+            <button id="btn_done" formaction="{% url 'cards:create_card' pk=group.pk btn='done' %}" type="submit" class="btn bg-success col-3 text-white display-none">Xong</button>
+            <a id="link_done" href="{% url 'cardgroups:learn' %}" class="btn bg-success col-3 text-white">Xong</a>
         </div>
     </form>
 </div>
+
+<script src="{% static 'public/js/create_card.js' %}"></script>
 {% endblock%}

@@ -6,8 +6,7 @@ from django.urls import reverse
 
 
 class CardGroup(models.Model):
-    # REVIEW: "cardGroups" -> "card_groups"
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='cardGroups')
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='card_groups')
     name = models.CharField(max_length=50)
     study_duration =models.DurationField(null=True, blank=True)
     last_study_at =  models.DateTimeField(_('last study'), blank=True, null=True)
@@ -17,9 +16,8 @@ class CardGroup(models.Model):
         return self.name
 
 
-    # def get_absolute_url(self):
-    #     reverse('cardgroups:group_details', args=[self.pk])
-
+    def get_absolute_url(self):
+        return reverse('cardgroups:group_details', args=[self.pk])
 
 
 

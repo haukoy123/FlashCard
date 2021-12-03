@@ -15,17 +15,20 @@
     <div class="position-fixed top-50 bottom-50 end-0">
         <a href="{% url 'cardgroups:create_group' %}" class="py-3 ps-3 pe-2 create-group fw-bold"><i class="fas fa-plus"></i> Tạo Group</a>
     </div>
-    <!-- <div class="container"> -->
-        <div class="text-center mb-3">
-            <span class="h3 fw-bold">Dashboard</span>
-            <form method="get">
-                <div class="input-group flex-nowrap">
-                    <input type="text" class="form-control">
-                    <span class="input-group-text">Tìm</span>
-                </div>
-            </form>
+    <div class="container">
+        <div class="d-flex justify-content-center">
+            <div class="text-center mb-3">
+                <div class="h3 fw-bold mb-3">Dashboard</div>
+                <form method="get">
+                    <div class="input-group flex-nowrap mb-3">
+                        <input type="search" style="width: 350px;" name="group" class="form-control">
+                        <button type="submit" class="btn btn-primary px-4"><i class="fas fa-search"></i></button>
+                    </div>
+                </form>
+            </div>
         </div>
-        {% if cardgroup_list.exists is False %}
+        
+        {% if not cardgroup_list %}
             <div class="text-center">
                 <span>Bạn hiện không có chồng card nào.</span>
             </div>
@@ -39,7 +42,8 @@
                                     <thead>
                                         <tr>
                                             <th colspan="2">
-                                                <h5 class="card-title">{{ cardgroup.name }}</h5>
+                                                <span class="card-title">{{ cardgroup.name }}</span>
+                                                <button type="button" data-bs-toggle="modal" data-bs-target="#delete_group_{{ cardgroup.pk }}" title="Xóa" class="btn-close float-end"></button>
                                             </th>
                                         </tr>
                                     </thead>
@@ -58,176 +62,38 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            <div class="text-center">
-                                <a href="#" class="btn btn-primary w-50">Chi tiết</a>
+                                <div class="text-center">
+                                    <a href="{{ cardgroup.get_absolute_url }}" class="btn btn-primary w-50">Chi tiết</a>
+                                </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" data-bs-backdrop="static" id="delete_group_{{ cardgroup.pk }}">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Thông báo</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <span>Bạn chắc chắn muốn xóa chồng này?</span>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                    <form action="{% url 'cardgroups:delete_group' cardgroup.pk %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary">Yes</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
-                <div class="col mb-4">
-                    <div class="card card-group">
-                        <div class="card-body">
-                            <table class="table border-dark">
-                                <thead>
-                                    <tr>
-                                    <th colspan="2">
-                                        <h5 class="card-title">tieng phap</h5>
-                                    </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Số card:</td>
-                                        <td class="text-end">34</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Số lần học:</td>
-                                        <td class="text-end">21</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Lần học gần nhất:</td>
-                                        <td class="text-end">10/10/2021</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        <div class="text-center">
-                            <a href="#" class="btn btn-primary w-50">Chi tiết</a>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col mb-4">
-                    <div class="card card-group">
-                        <div class="card-body">
-                            <table class="table border-dark">
-                                <thead>
-                                    <tr>
-                                    <th colspan="2">
-                                        <h5 class="card-title">tieng Lao</h5>
-                                    </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Số card:</td>
-                                        <td class="text-end">34</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Số lần học:</td>
-                                        <td class="text-end">21</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Lần học gần nhất:</td>
-                                        <td class="text-end">10/10/2021</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        <div class="text-center">
-                            <a href="#" class="btn btn-primary w-50">Chi tiết</a>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col mb-4">
-                    <div class="card card-group">
-                        <div class="card-body">
-                            <table class="table border-dark">
-                                <thead>
-                                    <tr>
-                                    <th colspan="2">
-                                        <h5 class="card-title">Tieng Nga</h5>
-                                    </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Số card:</td>
-                                        <td class="text-end">34</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Số lần học:</td>
-                                        <td class="text-end">21</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Lần học gần nhất:</td>
-                                        <td class="text-end">10/10/2021</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        <div class="text-center">
-                            <a href="#" class="btn btn-primary w-50">Chi tiết</a>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col mb-4">
-                    <div class="card card-group">
-                        <div class="card-body">
-                            <table class="table border-dark">
-                                <thead>
-                                    <tr>
-                                    <th colspan="2">
-                                        <h5 class="card-title">Lich su</h5>
-                                    </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Số card:</td>
-                                        <td class="text-end">34</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Số lần học:</td>
-                                        <td class="text-end">21</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Lần học gần nhất:</td>
-                                        <td class="text-end">10/10/2021</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        <div class="text-center">
-                            <a href="#" class="btn btn-primary w-50">Chi tiết</a>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col mb-4">
-                    <div class="card card-group">
-                        <div class="card-body">
-                            <table class="table border-dark">
-                                <thead>
-                                    <tr>
-                                    <th colspan="2">
-                                        <h5 class="card-title">Toan</h5>
-                                    </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Số card:</td>
-                                        <td>12</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Số lần học:</td>
-                                        <td>12</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Lần học gần nhất:</td>
-                                        <td>11/11/2021</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        <div class="text-center">
-                            <a href="#" class="btn btn-primary w-50">Chi tiết</a>
-                        </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         {% endif %}
-    <!-- </div> -->
+    </div>
+    
 </div> 
-    <script src="{% static 'cardgroups/js/card_group.js' %}"></script>
+
+<script src="{% static 'cardgroups/js/card_group.js' %}"></script>
 {% endblock%}

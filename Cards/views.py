@@ -7,6 +7,7 @@ from CardGroups.models import CardGroup
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.db.models import Count
 
 
 
@@ -20,25 +21,25 @@ class CreateCard(generic.CreateView):
         if kwargs['btn'] == 'begin':
             return super().get(request, *args, **kwargs)
         else:
-            # REVIEW: Không cần phải "reverse" khi truyền vào "redirect"
-            return redirect(reverse('cards:create_card', args=[self.kwargs['pk'], 'begin']))
+            return redirect('cards:create_card', self.kwargs['pk'], 'begin')
 
     def get_success_url(self):
         if self.kwargs['btn'] == 'continue':
             return reverse('cards:create_card', args=[self.kwargs['pk'], 'begin'])
         else:
-            return reverse('cardgroups:learn')
+            return reverse('cardgroups:group_details')
 
     def get_context_data(self, **kwargs):
-        # REVIEW: đoạn try/except dưới đây có thể sử dụng hàm get_object_or_404
+        # group = get_object_or_404(CardGroup, id=self.kwargs['pk'], user_id=self.request.user.pk)
+
         try:
-            group = CardGroup.objects.get(id=self.kwargs['pk'], user_id=self.request.user.pk)
+            group = CardGroup.objects.prefetch_related('cards').annotate(
+                card_count=Count('cards__id')
+            ).filter(id=self.kwargs['pk'], user_id=self.request.user.pk)[0]
         except CardGroup.DoesNotExist as e:
             raise Http404("Không tìm thấy chồng card nào")
+
         kwargs['group'] = group
-        # REVIEW: không cần đoạn if dưới đây vì đã có trong hàm super rồi
-        if self.extra_context is not None:
-            kwargs.update(self.extra_context)
         return super().get_context_data(**kwargs)
 
 
@@ -46,3 +47,23 @@ class CreateCard(generic.CreateView):
 @method_decorator(login_required, name='dispatch')
 class CardDetails(generic.DetailView):
     pass
+
+
+@login_required()
+def DeleteCard(request, id_group, id_card):
+    instance = get_object_or_404(Card, pk=id_card, card_group_id=id_group)
+    if request.method == 'POST':
+        instance.delete()
+    return redirect('cardgroups:group_details', id_group)
+        
+
+
+@login_required()
+def UpdateCard(request, id_group, id_card):
+    instance = get_object_or_404(Card, pk=id_card, card_group_id=id_group)
+    if request.method == 'POST':
+        form = CardForm(instance=instance, data={**request.POST.dict(), 'card_group': id_group})
+        if form.is_valid():
+            form.save()
+    return redirect('cardgroups:group_details', id_group)
+    

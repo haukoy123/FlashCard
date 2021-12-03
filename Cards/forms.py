@@ -8,11 +8,11 @@ class CardForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'front': forms.Textarea(attrs={
-                'class': 'form-control',
+                'class': 'form-control input_card',
                 'rows':'5'
             }),
             'back': forms.Textarea(attrs={
-                'class': 'form-control',
+                'class': 'form-control input_card',
                 'rows':'5'
             })
         }
