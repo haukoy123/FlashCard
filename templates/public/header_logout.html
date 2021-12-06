@@ -14,7 +14,7 @@
                         <img src="{% static 'public/images/FlashCard.png' %}" class="rounded-circle me-3" width="38px" height="38px" alt="">
                     {% endif %}
                 </button>
-            
+
                 <ul class="dropdown-menu bg-info pb-0" style="font-family: din-round,sans-serif;" aria-labelledby="dropdownMenu">
                     <li class=""><span class="p-3 fw-bold">{{ request.user.username }}</span></li>
                     <li><hr class="dropdown-divider m-0"></li>
@@ -25,8 +25,8 @@
                     <li class="bg-light"><a class="dropdown-item fw-bold" data-bs-toggle="modal" data-bs-target="#LogoutModal" href="{% url 'users:logout' %}">Đăng xuất</a></li>
                 </ul>
             </div>
-           
-            <button type="button" class="btn" 
+
+            <button type="button" class="btn"
                     style="background: #0c0c8a; color: white; border: 0px;"
                     data-bs-toggle="modal" data-bs-target="#LogoutModal">
                 <div class="clearfix">

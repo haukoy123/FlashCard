@@ -1,6 +1,6 @@
 from functools import partial
 from django.db.models.options import DEFAULT_NAMES
-from django.shortcuts import get_list_or_404, redirect, render, render
+from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render, render
 from django.views import generic, View
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -30,7 +30,7 @@ class CardGroupView(generic.ListView):
         if self.request.GET.get('group'):
             queryset = queryset.filter(name__icontains=self.request.GET.get('group'))
         return queryset
-    
+
 
 
 @method_decorator(login_required, name='dispatch')
@@ -72,48 +72,53 @@ class DeleteGroup(generic.DeleteView):
 
 @method_decorator(login_required, name='dispatch')
 class UpdateGroup(generic.UpdateView):
-    model = CardGroup   
+    model = CardGroup
     form_class = CardGroupForm
     template_name = 'cardgroups/group_details.html'
 
 
     def get_cards(self):
-        return get_list_or_404(Card, card_group_id=self.kwargs['pk'])
+        cards = self.group.cards.all()
+        return cards
 
 
     def get_card_paginator(self):
+
         return Paginator(self.get_cards(), 2)
 
 
     def get_card_page(self):
         card_paginator = self.get_card_paginator()
         if self.request.GET.get('page'):
-            page_number = int(self.request.GET.get('page'))
+            try:
+                page_number = int(self.request.GET.get('page'))
+            except ValueError as e:
+                return card_paginator.get_page(1)
+
             if page_number >=1 and page_number <= card_paginator.num_pages:
                 return card_paginator.get_page(page_number)
-
         return card_paginator.get_page(1)
 
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data['cardgroup'] = CardGroup.objects.prefetch_related('cards').annotate(
+
+        queryset = CardGroup.objects.prefetch_related('cards').annotate(
             card_count=Count('cards__id')
-        ).filter(user_id=self.request.user.pk, id=self.kwargs['pk'])[0]
-        context_data['card_page'] = self.get_card_page()
-        card = self.get_card_page().object_list[0]
+        )
+        self.group = get_object_or_404(queryset, user_id=self.request.user.pk, id=self.kwargs['pk'])
+        context_data['cardgroup'] = self.group
+        context_data['cards_page'] = self.get_card_page()
+        cards = context_data['cards_page'].object_list
+        context_data['cards_form'] = [CardForm(instance=card) for card in cards]
+
         # thẻ input của study_duration trong html có kiểu "number" và nhận vào đơn vị là phút
-        # mà trong initial: study_duration dạng timedelta ->form của study_duration nhận values: vd '00:10:02'-> k hiển thị được 
+        # mà trong initial: study_duration dạng timedelta ->form của study_duration nhận values: vd '00:10:02'-> k hiển thị được
 
-        study_duration_seconds = context_data['form'].initial['study_duration'].seconds
-        study_duration_minutes = round(study_duration_seconds/60, 2)
-        context_data['form'].initial['study_duration'] = study_duration_minutes
-        context_data['card_form'] = CardForm(instance=card)
+
+        # có thể viết trong form được không???
+        # study_duration_seconds = context_data['form'].initial['study_duration'].seconds
+        # study_duration_minutes = round(study_duration_seconds/60, 2)
+        # context_data['form'].initial['study_duration'] = study_duration_minutes
+
         return context_data
-
-    
-
-@login_required()
-def GroupDetails(request):
-    pass
-    

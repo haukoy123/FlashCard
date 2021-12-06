@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'CardGroups.apps.CardgroupsConfig',
     'Cards.apps.CardsConfig',
-
+    'mathfilters',
 ]
 
 MIDDLEWARE = [

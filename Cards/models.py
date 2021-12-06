@@ -10,7 +10,7 @@ class Card(models.Model):
     def __str__(self):
         return self.front
 
-    
+
     class Meta:
         db_table = "card"
         ordering = ["id"]

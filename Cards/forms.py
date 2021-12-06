@@ -16,4 +16,3 @@ class CardForm(forms.ModelForm):
                 'rows':'5'
             })
         }
-

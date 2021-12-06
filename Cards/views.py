@@ -55,7 +55,7 @@ def DeleteCard(request, id_group, id_card):
     if request.method == 'POST':
         instance.delete()
     return redirect('cardgroups:group_details', id_group)
-        
+
 
 
 @login_required()
@@ -66,4 +66,3 @@ def UpdateCard(request, id_group, id_card):
         if form.is_valid():
             form.save()
     return redirect('cardgroups:group_details', id_group)
-    

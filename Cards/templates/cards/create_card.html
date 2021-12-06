@@ -10,11 +10,11 @@
     {% include "public/header_logout.html" %}
 {% endblock %}
 
-{% block content %} 
+{% block content %}
 <div style="margin-top: 100px;">
     <div class="text-center mb-3">
         <span class="h3 fw-bold">Card mới</span>
-    </div>  
+    </div>
     <form method="post" class="col-7 mx-auto">
         {% csrf_token %}
         <div class="mb-3">
@@ -37,6 +37,5 @@
         </div>
     </form>
 </div>
-
-<script src="{% static 'public/js/create_card.js' %}"></script>
+<script src="{% static 'cards/js/create_card.js' %}"></script>
 {% endblock%}

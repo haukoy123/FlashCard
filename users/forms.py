@@ -1,9 +1,7 @@
 from django import forms
 from django.forms.widgets import PasswordInput
 from users.models import User
-from django.contrib.auth.forms import SetPasswordForm
 from django.utils.translation import gettext_lazy as _
-from django.core.exceptions import ValidationError
 from django.contrib.auth import  password_validation
 
 
@@ -107,12 +105,10 @@ class SetPasswordFormCustom(forms.Form):
         password_validation.validate_password(new_password, self.user)
         return new_password
 
-        
+
     def save(self, commit=True):
         password = self.cleaned_data["new_password"]
         self.user.set_password(password)
         if commit:
             self.user.save()
         return self.user
-
-

@@ -10,7 +10,7 @@
     {% include "public/header_logout.html" %}
 {% endblock %}
 
-{% block content %}    
+{% block content %}
 <div style="margin-top: 100px;">
     <div class="position-fixed top-50 bottom-50 end-0">
         <a href="{% url 'cardgroups:create_group' %}" class="py-3 ps-3 pe-2 create-group fw-bold"><i class="fas fa-plus"></i> Tạo Group</a>
@@ -27,7 +27,7 @@
                 </form>
             </div>
         </div>
-        
+
         {% if not cardgroup_list %}
             <div class="text-center">
                 <span>Bạn hiện không có chồng card nào.</span>
@@ -92,8 +92,8 @@
             </div>
         {% endif %}
     </div>
-    
-</div> 
+
+</div>
 
 <script src="{% static 'cardgroups/js/card_group.js' %}"></script>
 {% endblock%}
