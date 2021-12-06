@@ -14,7 +14,7 @@ class DurationFieldCustom(forms.DurationField):
     def to_python(self, value):
         try:
             study_duration_minute = int(value)
-        except ValueError as e:
+        except ValueError as e:  # REVIEW: TypeError khi value = None, không cần "as e"
             return super().to_python(value)
 
         value = datetime.timedelta(seconds=study_duration_minute * 60)

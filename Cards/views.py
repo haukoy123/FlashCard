@@ -32,6 +32,10 @@ class CreateCard(generic.CreateView):
     def get_context_data(self, **kwargs):
         # group = get_object_or_404(CardGroup, id=self.kwargs['pk'], user_id=self.request.user.pk)
 
+        # REVIEW:
+        # 1) Khi viết ".filter(...)[0]" thì sẽ không xảy ra lỗi CardGroup.DoesNotExist, mà là lỗi IndexError
+        # viết ".filter(...).get()", hoặc ".get(...)" thì mới là lỗi CardGroup.DoesNotExist
+        # 2) Em có thể dùng hàm get_object_or_404, nó nhận biến đầu tiên là model hoặc queryset
         try:
             group = CardGroup.objects.prefetch_related('cards').annotate(
                 card_count=Count('cards__id')
@@ -51,6 +55,7 @@ class CardDetails(generic.DetailView):
 
 @login_required()
 def DeleteCard(request, id_group, id_card):
+    # REVIEW: cần thêm điều kiện, "card_group__user=request.user". Vì sao?
     instance = get_object_or_404(Card, pk=id_card, card_group_id=id_group)
     if request.method == 'POST':
         instance.delete()
@@ -60,6 +65,7 @@ def DeleteCard(request, id_group, id_card):
 
 @login_required()
 def UpdateCard(request, id_group, id_card):
+    # REVIEW: cần thêm điều kiện, "card_group__user=request.user". Vì sao?
     instance = get_object_or_404(Card, pk=id_card, card_group_id=id_group)
     if request.method == 'POST':
         form = CardForm(instance=instance, data={**request.POST.dict(), 'card_group': id_group})

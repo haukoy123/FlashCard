@@ -92,7 +92,7 @@ class UpdateGroup(generic.UpdateView):
         if self.request.GET.get('page'):
             try:
                 page_number = int(self.request.GET.get('page'))
-            except ValueError as e:
+            except ValueError as e:  # REVIEW: không cần "as e"
                 return card_paginator.get_page(1)
 
             if page_number >=1 and page_number <= card_paginator.num_pages:
@@ -110,6 +110,7 @@ class UpdateGroup(generic.UpdateView):
         context_data['cardgroup'] = self.group
         context_data['cards_page'] = self.get_card_page()
         cards = context_data['cards_page'].object_list
+        # REVIEW: nên đặt tên số nhiều: "cards_forms"
         context_data['cards_form'] = [CardForm(instance=card) for card in cards]
 
         # thẻ input của study_duration trong html có kiểu "number" và nhận vào đơn vị là phút
