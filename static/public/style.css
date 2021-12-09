@@ -88,3 +88,7 @@ body {
 .background-card-header {
     background: #d4cebc;
 }
+
+.mg-top-100 {
+    margin-top: 100px;
+}

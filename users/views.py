@@ -92,7 +92,7 @@ def ProfileView(request):
 @login_required()
 def PasswordChange(request):
     if request.method == 'POST':
-        form = PasswordChangeForm(data=request.POST)
+        form = PasswordChangeForm(data=request.POST, user=request.user)
         if form.is_valid():
             user = request.user
             if user.check_password(form.cleaned_data['current_password']):

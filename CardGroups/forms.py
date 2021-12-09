@@ -6,17 +6,18 @@ import datetime
 class DurationFieldCustom(forms.DurationField):
 
     def prepare_value(self, value):
+        # đầu ra là số phút không phải kiểu mặc định của timedelta('00:10:00')
         if isinstance(value, datetime.timedelta):
-            value = value.seconds / 60
+            value = value.seconds // 60
         return value
 
 
     def to_python(self, value):
+        # đầu vào là số phút
         try:
             study_duration_minute = int(value)
-        except ValueError as e:  # REVIEW: TypeError khi value = None, không cần "as e"
+        except (ValueError, TypeError):
             return super().to_python(value)
-
         value = datetime.timedelta(seconds=study_duration_minute * 60)
         return super().to_python(value)
 
@@ -40,9 +41,3 @@ class CardGroupForm(forms.ModelForm, DurationFieldCustom):
             })
         }
 
-
-
-    # def clean_study_duration(self):
-    #     # REVIEW: đoạn này đọc hơi lạ, lấy "seconds" nhưng lại set vào "minutes"
-    #     study_duration_minute = self.cleaned_data['study_duration'].seconds
-    #     return timedelta(seconds=study_duration_minute*60)

@@ -10,5 +10,8 @@ urlpatterns = [
     # path('cardgroups/<int:pk>/update/', views.UpdateGroup.as_view(), name='update_group'),
     path('cardgroups/details/<int:pk>/', views.UpdateGroup.as_view(), name='group_details'),
     path('cardgroups/<int:pk>/delete/', views.DeleteGroup.as_view(), name='delete_group'),
+    path('cardgroups/<int:pk>/study/', views.StudyView, name='study_group'),
+    path('cardgroups/<int:pk>/study/continue/', views.ContinueStudyingView, name='continues_studying'),
+    path('cardgroups/<int:pk>/study/check/', views.CheckResult, name='continues_studying'),
 
 ]

@@ -13,4 +13,4 @@ class Card(models.Model):
 
     class Meta:
         db_table = "card"
-        ordering = ["id"]
+        ordering = ["-id"]

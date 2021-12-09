@@ -53,12 +53,18 @@ class LoginForm(forms.Form):
 
 
 class PasswordChangeForm(forms.Form):
-    def __init__(self, instance=None, *args, **kwargs):
+    def __init__(self, user=None, instance=None, *args, **kwargs):
         self.instance = instance
+        self.user = user
         super().__init__(*args, **kwargs)
 
     current_password = forms.CharField(widget=PasswordInput(attrs={'class': 'form-control'}))
     password = forms.CharField(widget=PasswordInput(attrs={'class': 'form-control'}))
+    
+    def clean_password(self):
+        password = self.cleaned_data['password']
+        password_validation.validate_password(password, self.user)
+        return password
 
 
 

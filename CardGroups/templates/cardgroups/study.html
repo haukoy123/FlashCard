@@ -1,0 +1,41 @@
+{% extends "public/base.html" %}
+
+{% load static %}
+
+{% block head %}
+    <title>Luyện tập</title>
+{% endblock%}
+
+{% block header %}
+    {% include "public/header_logout.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="mg-top-100">
+    <div class="text-center mb-3">
+        <span class="h3 fw-bold"></span>
+    </div>
+    <div class="d-flex justify-content-center my-3">
+        <div class="col-4">
+            <div class="mb-3">Chồng card: {{ card_group.name }}</div>
+            <div class="">Mặt trước:</div>
+            <div class="mb-3">
+                <textarea name="" id="id_front" cols="50" disabled rows="5" class="text-black bg-white">{{ card.card.front }}</textarea>
+            </div>
+            <div class="">
+                <label for="id_back">Mặt sau</label>
+            </div>
+            <div class="mb-3">
+                <textarea name="back" id="id_back" cols="50" rows="5"></textarea>
+            </div>
+            <div class="mb-3">
+                <button id="next-card" type="button" class="btn btn-success">Tiếp tục</button>
+            </div>
+            <div class="mb-3">
+                <button id="check-result" type="button" class="btn btn-success">Kiểm tra</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'cardgroups/js/study.js' %}"></script>
+{% endblock%}

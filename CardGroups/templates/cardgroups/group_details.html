@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block content %}
-<div style="margin-top: 100px;">
+<div class="mg-top-100">
     <div class="text-center">
         <div class="h3 fw-bold">
             {{ cardgroup.name }}
@@ -84,7 +84,8 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <button type="button" class="btn btn-success w-100">Ôn bài</button>
+                    <a href="{% url 'cardgroups:study_group' cardgroup.pk %}" class="btn btn-success w-100">Ôn bài</a>
+                    <!-- <button type="button" class="btn btn-success w-100">Ôn bài</button> -->
                 </div>
             </div>
             <div class="col-8 bg-list-card">
@@ -150,7 +151,7 @@
                     </div>
                 {% endfor %}
                 </div>
-                {% for card_form in cards_form %}
+                {% for card_form in cards_forms %}
                 <div class="modal fade" id="update_card_{{ card_form.instance.pk }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -158,7 +159,7 @@
                                 <h5 class="modal-title" id="staticBackdropLabel">Sửa card</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form action="{% url 'cards:update_card' cardgroup.pk card_form.instance.pk %}" method="post">
+                            <form action="{% url 'cards:update_card' cardgroup.pk card_form.instance.pk cards_page.number %}" method="post">
                                 {% csrf_token %}
                                 <div class="modal-body">
                                     <input type="hidden" disabled id="id_card_group" name="card_group" value="{{ cardgroup.pk }}">
