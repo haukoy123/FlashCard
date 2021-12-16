@@ -1,6 +1,7 @@
 body {
     background-color: #d8d8d8;
     font-family: din-round,sans-serif;
+    /* font-family: 'Baloo Tamma 2' */
 }
 
 .login_form {
@@ -91,4 +92,30 @@ body {
 
 .mg-top-100 {
     margin-top: 100px;
+}
+
+
+.btn-green:hover {
+    background-color: #2e8b0f;
+    color: #fff;
+    border-color: #2e8b0f;
+}
+
+.btn-green {
+    color: #fff;
+    border-color: #36a212;
+    background-color: #36a212;
+}
+
+
+.btn-orange:hover {
+    color: #fff;
+    border-color: #ce7b16;
+    background-color: #ce7b16;
+}
+
+.btn-orange {
+    color: #fff;
+    border-color: #e28715;
+    background-color: #e28715;
 }

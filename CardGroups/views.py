@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import random
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render, render
 from django.views import generic
@@ -104,8 +105,14 @@ class UpdateGroup(generic.UpdateView):
         return context_data
 
 
+
+
 @login_required()
 def StudyView(request, pk):
+    card_group = get_object_or_404(CardGroup, pk=pk, user=request.user)
+    if request.session.get('data') and request.session.get('card') and request.session.get('card')['card']['card_group'] == pk:
+        return render(request, 'cardgroups/study.html', {'card': request.session.get('card'), 'cardgroup': card_group})
+    
     cards = get_list_or_404(Card,card_group_id=pk, card_group__user=request.user)
     random.shuffle(cards)
     max_priority_level = len(cards)
@@ -116,31 +123,36 @@ def StudyView(request, pk):
         
     request.session['data'] = data
 
-    # group = get_object_or_404(CardGroup, pk=pk)
-    # if group.user == request.user:
-    #     group.last_study_at = timezone.now()
-    #     study_count_last = group.study_count
-    #     group.study_count = study_count_last + 1
-    #     group.save()
-    # else:
-    #     raise Http404('không tìm thấy group')
+    card_group.last_study_at = timezone.now()
+    study_count_last = card_group.study_count
+    card_group.study_count = study_count_last + 1
+    card_group.save()
 
     index = index_of_selected_card(request)
     UpdatePriorityLevel(request, index)
-    return render(request, 'cardgroups/study.html', {'card': request.session.get('card'), 'card_group': cards[index].card_group} )
-    
+    return render(request, 'cardgroups/study.html', {'card': request.session.get('card'), 'cardgroup': card_group})
 
 
 
-
-def UpdatePriorityLevel(request, index):
+def UpdatePriorityLevel(request, index, speed=None, result=None):
     data = request.session.get('data')
-    data[index]['priority_level'] = data[index]['priority_level'] - len(data)
-    for item in data:
-        item['priority_level'] = item['priority_level'] + 1
+    if speed is None and result is None:
+        data[index]['priority_level'] = data[index]['priority_level'] - len(data)
+        for item in data:
+            item['priority_level'] += 1
+    else:
+        if not result:
+            if len(data) > 3:
+                data[index]['priority_level'] += len(data) - 3
+            else:
+                data[index]['priority_level'] += 2
+        else:
+            if speed == 'normal':
+                data[index]['priority_level'] += round(len(data) * 20 / 100)
+            elif speed == 'slow':
+                data[index]['priority_level'] += round(len(data) * 40 / 100)
 
     request.session['data'] = data
-
 
 
 def index_of_selected_card(request):
@@ -175,12 +187,43 @@ def ContinueStudyingView(request, pk):
 def CheckResult(request, pk):
     session_card = request.session.get('card')
     card = request.session.get('data')[session_card['index']]['card']
-    back = request.GET.get('back')
+    back = request.POST.get('back')
+
     time_start = parser.parse(session_card['start_time'])
     time_answered = timezone.now() - time_start
-    print(time_answered)
 
     result = False
-    if back.casefold() == card['back'].casefold():
+    speed = None
+    if back.strip().casefold() == card['back'].strip().casefold():
         result = True
-    return JsonResponse({'result': result, 'card': card}, status=200)
+        speed = CheckTime(card['back'].strip().casefold(), time_answered)
+
+    UpdatePriorityLevel(request, session_card['index'], speed, result)
+
+    return JsonResponse({'result': result, 'card': card, 'data': request.session.get('data')}, status=200)
+
+
+
+
+def CheckTime(back, real_time):
+    seconds_per_letter = 2
+    typing_time = seconds_per_letter * len(back)
+    thinking_time = 3
+    theoretical_time = timedelta(seconds=(typing_time + thinking_time))
+    if real_time < theoretical_time * 30 / 100:
+        return 'fast'
+    if real_time > theoretical_time * 60 / 100:
+        return 'slow'
+    else:
+        return 'normal'
+
+
+
+
+def EndStudy(request, pk):
+    try:
+        del request.session['card']
+        del request.session['data']
+    except KeyError:
+        return redirect('cardgroups:group_details', pk)
+    return redirect('cardgroups:group_details', pk)

@@ -12,6 +12,7 @@ urlpatterns = [
     path('cardgroups/<int:pk>/delete/', views.DeleteGroup.as_view(), name='delete_group'),
     path('cardgroups/<int:pk>/study/', views.StudyView, name='study_group'),
     path('cardgroups/<int:pk>/study/continue/', views.ContinueStudyingView, name='continues_studying'),
-    path('cardgroups/<int:pk>/study/check/', views.CheckResult, name='continues_studying'),
+    path('cardgroups/<int:pk>/study/check/', views.CheckResult, name='check_result'),
+    path('cardgroups/<int:pk>/study/end/', views.EndStudy, name='end_study'),
 
 ]
