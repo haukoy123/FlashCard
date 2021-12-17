@@ -1,0 +1,47 @@
+{% load static %}
+
+<div class="row text-center">
+    <div class="col-3">
+    </div>
+    <div class="col-6">
+        <div class="mb-3">
+            <label class="mb-2"> Mặt trước</label>
+            <br>
+            <textarea name="" id="id_front" cols="50" disabled rows="5"
+                class="w-100 text-black bg-white">{{ card.card.front }}</textarea>
+        </div>
+        <div class="mb-3">
+            <form id="form-check-result" method="post">
+                {% csrf_token %}
+                <label for="id_back" class="mb-2">Mặt sau</label>
+                <br>
+                <textarea name="back" id="id_back" autofocus="autofocus" cols="50" rows="5" class="w-100"></textarea>
+            </form>
+        </div>
+    </div>
+    <div class="col-3">
+    </div>
+</div>
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-8">
+                <div id="show-result">
+                    <span class="fw-bold">Nhấn kiểm tra để xem kết quả</span>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="text-end">
+                    <div id="btn" class="mb-2">
+                        <button id="check-result" type="button" class="btn btn-primary w-75">Kiểm tra</button>
+                    </div>
+                    <button id="btn-end" type="button" class="btn btn-danger w-75">Kết thúc</button>
+                    <!-- <a href="{% url 'cardgroups:end_study' cardgroup_pk %}" class="btn btn-danger w-75">Kết thúc</a> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-3"></div>
+</div>
+<script src="{% static 'cardgroups/js/study.js' %}"></script>

@@ -119,3 +119,9 @@ body {
     border-color: #e28715;
     background-color: #e28715;
 }
+
+
+.fieldset {
+        padding: revert;
+        border: 1px solid;
+}

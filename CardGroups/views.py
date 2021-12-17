@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import random
-from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render, render
+from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.views import generic
 from django.contrib.auth.decorators import login_required
 from CardGroups.models import CardGroup
@@ -16,6 +16,8 @@ from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from dateutil import parser
 from django.contrib import messages
+
+from django.template import loader
 
 
 
@@ -110,6 +112,8 @@ class UpdateGroup(generic.UpdateView):
 
 @login_required()
 def StudyView(request, pk):
+
+
     if request.method == 'GET':
         return redirect('cardgroups:group_details', pk)
 
@@ -118,9 +122,26 @@ def StudyView(request, pk):
     expire_date = set_expire_date(request, card_group)
     if expire_date is None:
         return redirect('cardgroups:group_details', pk)
+
+    template_name = 'cardgroups/show_card_in_study_screen.html'
+    html = get_html(
+        request,
+        template_name,
+        {
+            'card': request.session.get('card'),
+            'cardgroup_pk': pk
+        }
+    )
+    context = {
+        'card': request.session.get('card'),
+        'cardgroup': card_group,
+        'expiredate': expire_date,
+        'html': html
+    }
+
     if check_session(request, pk):
         # expire_date = parser.parse(request.session.get('expire_date'))
-        return render(request, 'cardgroups/study.html', {'card': request.session.get('card'), 'cardgroup': card_group, 'expiredate': expire_date})
+        return render(request, 'cardgroups/study.html', context)
     # else:
         # expire_date = set_expire_date(request)
 
@@ -133,8 +154,25 @@ def StudyView(request, pk):
     set_session_card(request, index)
     set_session_expire_date(request, expire_date)
     update_prority_level(request, index)
-    return render(request, 'cardgroups/study.html', {'card': request.session.get('card'), 'cardgroup': card_group, 'expiredate': expire_date})
 
+    html = get_html(
+        request,
+        template_name,
+        {
+            'card': request.session.get('card'),
+            'cardgroup_pk': pk
+        }
+    )
+    context['card'] = request.session.get('card')
+    context['html'] = html
+
+    return render(request, 'cardgroups/study.html', context)
+
+
+
+def get_html(request, template_name, context):
+    template = loader.get_template(template_name)
+    return template.render(context, request)
 
 
 def set_session_data(request, cards):
@@ -163,6 +201,27 @@ def set_session_expire_date(request, expire_date):
         request.session['expire_date'] = expire_date
 
 
+def set_session_statistics(request, result=True):
+    try:
+        answered_correctly = request.session['statistics']['answered_correctly']
+        answered_wrong = request.session['statistics']['answered_wrong']
+    except KeyError:
+        answered_correctly = 0
+        answered_wrong = 0
+
+    if result:
+        answered_correctly += 1
+    else:
+         answered_wrong += 1
+
+    statistics = {
+        'answered_correctly': answered_correctly,
+        'answered_wrong': answered_wrong
+    }
+
+    request.session['statistics'] = statistics
+
+
 def update_card_group_last(card_group):
     card_group.last_study_at = timezone.now()
     study_count_last = card_group.study_count
@@ -186,7 +245,7 @@ def set_expire_date(request, card_group):
     except ValueError:
         messages.error(request, 'Thời gian ôn tập phải là số nguyên dương')
         return None
-        
+
     if isinstance(duration, datetime):
         return timezone.now() + duration
     return timezone.now() + timedelta(minutes=duration)
@@ -233,10 +292,12 @@ def ContinueStudyingView(request, pk):
             index = index_of_selected_card(request)
             set_session_card(request, index)
             update_prority_level(request, index)
-            # return render(request, 'cardgroups/study.html', {'card': context} )
-            return JsonResponse({'card': request.session.get('card')}, status=200)
+            template_name = 'cardgroups/show_card_in_study_screen.html'
+            html = get_html(request, template_name, {'card': request.session.get('card'), 'cardgroup_pk': pk})
+            return JsonResponse({'card': request.session.get('card'), 'html': html}, status=200)
         else:
-            return JsonResponse({'expired': True, 'redirect': reverse('cardgroups:group_details', args=[pk])})
+            return EndStudy(request, pk)
+            # return JsonResponse({'expired': True, 'redirect': reverse('cardgroups:group_details', args=[pk])})
     return redirect('cardgroups:group_details', pk)
 
 
@@ -246,20 +307,25 @@ def ContinueStudyingView(request, pk):
 def CheckResult(request, pk):
     session_card = request.session.get('card')
     card = request.session.get('data')[session_card['index']]['card']
-    back = request.POST.get('back')
+    answered_back = request.POST.get('back')
+    back = card['back']
 
     time_start = parser.parse(session_card['start_time'])
     time_answered = timezone.now() - time_start
 
     result = False
     speed = None
-    if back.strip().casefold() == card['back'].strip().casefold():
+    if answered_back.strip().casefold() == back.strip().casefold():
         result = True
         speed = check_time(card['back'].strip().casefold(), time_answered)
+    
+    set_session_statistics(request, result)
 
     update_prority_level(request, session_card['index'], speed, result)
+    template_name = 'cardgroups/show_result_in_study_screen.html'
+    html = get_html(request, template_name, {'result': result, 'card': card, 'cardgroup_pk': pk, 'answered_back': answered_back})
 
-    return JsonResponse({'result': result, 'card': card, 'data': request.session.get('data')}, status=200)
+    return JsonResponse({'result': result, 'card': card, 'data': request.session.get('data'), 'html': html}, status=200)
 
 
 
@@ -281,9 +347,17 @@ def check_time(back, real_time):
 @login_required()
 def EndStudy(request, pk):
     try:
+        statistics = request.session['statistics']
         del request.session['card']
         del request.session['data']
+        del request.session['statistics']
         del request.session['expire_date']
     except KeyError:
         return redirect('cardgroups:group_details', pk)
-    return redirect('cardgroups:group_details', pk)
+
+    if request.is_ajax():
+        template_name = 'cardgroups/show_statistics_in_study_screen.html'
+        html = get_html(request, template_name, statistics)
+        return JsonResponse({'html': html})
+    else:
+        return redirect('cardgroups:group_details', pk)

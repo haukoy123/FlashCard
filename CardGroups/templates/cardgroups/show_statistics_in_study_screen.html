@@ -1,0 +1,41 @@
+{% load mathfilters %}
+<div class="row">
+    <div class="col-3">
+    </div>
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header h5 text-center fw-bold">
+                Thống kê kết quả vừa ôn tập
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>Số lần trả lời đúng</th>
+                            <td>{{ answered_correctly }}</td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <th>Số lần trả lời sai</th>
+                            <td>{{ answered_wrong }}</td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <th>Tổng số lần trả lời</th>
+                            <th>{{ answered_correctly|add:answered_wrong }}</th>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="text-center">
+                    <a href="{% url 'cardgroups:learn' %}" class="btn btn-primary w-25">OK</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-3">
+    </div>
+</div>
