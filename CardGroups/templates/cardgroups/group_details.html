@@ -1,6 +1,9 @@
 {% extends "public/base.html" %}
 {% load mathfilters %}
 {% load static %}
+{% load card_group_extras %}
+
+
 
 {% block head %}
     <title>Chi tiết chồng Card</title>
@@ -84,8 +87,17 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <a href="{% url 'cardgroups:study_group' cardgroup.pk %}" class="btn btn-success w-100">Ôn bài</a>
-                    <!-- <button type="button" class="btn btn-success w-100">Ôn bài</button> -->
+                    <form action="{% url 'cardgroups:study_group' cardgroup.pk %}" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3 d-inline-block w-100">
+                            <label for="id_new_study_duration">Thời gian ôn bài(phút):</label>
+    
+                            <input type="number" name="new_study_duration" class="form-control w-25 float-end py-0"
+                            id="id_new_study_duration" value="{{ cardgroup.study_duration|minutes }}"> 
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Ôn bài</button>
+                        <!-- <a href="{% url 'cardgroups:study_group' cardgroup.pk %}" class="btn btn-success w-100">Ôn bài</a> -->
+                    </form>
                 </div>
             </div>
             <div class="col-8 bg-list-card">

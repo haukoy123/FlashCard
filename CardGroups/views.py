@@ -14,8 +14,9 @@ from Cards.forms import CardForm
 from django.utils import timezone
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
-from django.http.response import Http404
 from dateutil import parser
+from django.contrib import messages
+
 
 
 
@@ -109,32 +110,89 @@ class UpdateGroup(generic.UpdateView):
 
 @login_required()
 def StudyView(request, pk):
+    if request.method == 'GET':
+        return redirect('cardgroups:group_details', pk)
+
     card_group = get_object_or_404(CardGroup, pk=pk, user=request.user)
-    if request.session.get('data') and request.session.get('card') and request.session.get('card')['card']['card_group'] == pk:
-        return render(request, 'cardgroups/study.html', {'card': request.session.get('card'), 'cardgroup': card_group})
-    
-    cards = get_list_or_404(Card,card_group_id=pk, card_group__user=request.user)
+
+    expire_date = set_expire_date(request, card_group)
+    if expire_date is None:
+        return redirect('cardgroups:group_details', pk)
+    if check_session(request, pk):
+        # expire_date = parser.parse(request.session.get('expire_date'))
+        return render(request, 'cardgroups/study.html', {'card': request.session.get('card'), 'cardgroup': card_group, 'expiredate': expire_date})
+    # else:
+        # expire_date = set_expire_date(request)
+
+    update_card_group_last(card_group)
+    cards = get_list_or_404(Card, card_group_id=pk, card_group__user=request.user)
     random.shuffle(cards)
+
+    set_session_data(request, cards)
+    index = index_of_selected_card(request)
+    set_session_card(request, index)
+    set_session_expire_date(request, expire_date)
+    update_prority_level(request, index)
+    return render(request, 'cardgroups/study.html', {'card': request.session.get('card'), 'cardgroup': card_group, 'expiredate': expire_date})
+
+
+
+def set_session_data(request, cards):
     max_priority_level = len(cards)
     data = list()
     for card in cards:
         data.append({'priority_level': max_priority_level, 'card':model_to_dict(card)})
         max_priority_level -= 1
-        
+
     request.session['data'] = data
 
+
+def set_session_card(request, index):
+    data = request.session.get('data')
+    card = data[index]['card'].copy()
+    card.pop('back')
+    start_time = timezone.now()
+
+    request.session['card'] = {'index': index, 'card': card, 'start_time': str(start_time)}
+
+
+def set_session_expire_date(request, expire_date):
+    if isinstance(expire_date, datetime):
+        request.session['expire_date'] = str(expire_date)
+    else:
+        request.session['expire_date'] = expire_date
+
+
+def update_card_group_last(card_group):
     card_group.last_study_at = timezone.now()
     study_count_last = card_group.study_count
     card_group.study_count = study_count_last + 1
     card_group.save()
 
-    index = index_of_selected_card(request)
-    UpdatePriorityLevel(request, index)
-    return render(request, 'cardgroups/study.html', {'card': request.session.get('card'), 'cardgroup': card_group})
+
+def check_session(request, pk):
+    if request.session.get('data') and request.session.get('expire_date') and request.session.get('card') and request.session.get('card')['card']['card_group'] == pk:
+        expire_date = parser.parse(request.session.get('expire_date'))
+        if expire_date > timezone.now():
+            return True
+    return False
 
 
+def set_expire_date(request, card_group):
+    try:
+        duration = int(request.POST['new_study_duration'])
+    except KeyError:
+        duration = card_group.study_duration
+    except ValueError:
+        messages.error(request, 'Thời gian ôn tập phải là số nguyên dương')
+        return None
+        
+    if isinstance(duration, datetime):
+        return timezone.now() + duration
+    return timezone.now() + timedelta(minutes=duration)
 
-def UpdatePriorityLevel(request, index, speed=None, result=None):
+
+def update_prority_level(request, index, speed=None, result=None):
     data = request.session.get('data')
     if speed is None and result is None:
         data[index]['priority_level'] = data[index]['priority_level'] - len(data)
@@ -163,27 +221,28 @@ def index_of_selected_card(request):
         index_card = random.choice(index_cards)
     else:
         index_card = index_cards[0]
-        
-    card = data[index_card]['card'].copy()
-    card.pop('back')
-    start_time = timezone.now()
-    request.session['card'] = {'index': index_card, 'card': card, 'start_time': str(start_time)}
+
     return index_card
 
 
 
-
+@login_required()
 def ContinueStudyingView(request, pk):
     if request.is_ajax():
-        index = index_of_selected_card(request)
-        UpdatePriorityLevel(request, index)
-        # return render(request, 'cardgroups/study.html', {'card': context} )
-        return JsonResponse({'card': request.session.get('card')}, status=200)
+        if check_session(request, pk):
+            index = index_of_selected_card(request)
+            set_session_card(request, index)
+            update_prority_level(request, index)
+            # return render(request, 'cardgroups/study.html', {'card': context} )
+            return JsonResponse({'card': request.session.get('card')}, status=200)
+        else:
+            return JsonResponse({'expired': True, 'redirect': reverse('cardgroups:group_details', args=[pk])})
+    return redirect('cardgroups:group_details', pk)
 
-    return redirect('cardgroups:learn')
 
 
 
+@login_required()
 def CheckResult(request, pk):
     session_card = request.session.get('card')
     card = request.session.get('data')[session_card['index']]['card']
@@ -196,34 +255,35 @@ def CheckResult(request, pk):
     speed = None
     if back.strip().casefold() == card['back'].strip().casefold():
         result = True
-        speed = CheckTime(card['back'].strip().casefold(), time_answered)
+        speed = check_time(card['back'].strip().casefold(), time_answered)
 
-    UpdatePriorityLevel(request, session_card['index'], speed, result)
+    update_prority_level(request, session_card['index'], speed, result)
 
     return JsonResponse({'result': result, 'card': card, 'data': request.session.get('data')}, status=200)
 
 
 
 
-def CheckTime(back, real_time):
+def check_time(back, real_time):
     seconds_per_letter = 2
     typing_time = seconds_per_letter * len(back)
-    thinking_time = 3
-    theoretical_time = timedelta(seconds=(typing_time + thinking_time))
-    if real_time < theoretical_time * 30 / 100:
+    thinking_time = real_time.seconds - typing_time
+
+    if thinking_time < 3:
         return 'fast'
-    if real_time > theoretical_time * 60 / 100:
+    if thinking_time > 6:
         return 'slow'
     else:
         return 'normal'
 
 
 
-
+@login_required()
 def EndStudy(request, pk):
     try:
         del request.session['card']
         del request.session['data']
+        del request.session['expire_date']
     except KeyError:
         return redirect('cardgroups:group_details', pk)
     return redirect('cardgroups:group_details', pk)

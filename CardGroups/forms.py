@@ -2,6 +2,8 @@ from users.models import User
 from CardGroups.models import CardGroup
 from django import forms
 import datetime
+from django.core.exceptions import ValidationError
+
 
 class DurationFieldCustom(forms.DurationField):
 
@@ -18,6 +20,8 @@ class DurationFieldCustom(forms.DurationField):
             study_duration_minute = int(value)
         except (ValueError, TypeError):
             return super().to_python(value)
+        if study_duration_minute <= 0:
+            raise ValidationError('Phải nhập số nguyên dương(đơn vị phút)', code='invalid')
         value = datetime.timedelta(seconds=study_duration_minute * 60)
         return super().to_python(value)
 

@@ -12,17 +12,23 @@ $("#next-card").on("click", function() {
 
 
 function ShowCard(response) {
-    $('#id_back').val('')
-    $('#id_front').val(response.card.card.front)
+    if (response.expired === true) {
+        window.location.replace(response.redirect)
+    }
+    else {
+        $('#id_back').val('')
+        $('#id_front').val(response.card.card.front)
+    
+        $("#show-result").empty();
+        const txt = $("<span></span>").addClass('fw-bold').text('Nhấn kiểm tra để xem kết quả')
+        $("#show-result").append(txt);
+    
+        $("#check-result").show();
+        $("#next-card").hide();
+    
+        $("#id_back").focus();
+    }
 
-    $("#show-result").empty();
-    const txt = $("<span></span>").addClass('fw-bold').text('Nhấn kiểm tra để xem kết quả')
-    $("#show-result").append(txt);
-
-    $("#check-result").show();
-    $("#next-card").hide();
-
-    $("#id_back").focus();
 }
 
 
