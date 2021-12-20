@@ -36,12 +36,31 @@
                     <div id="btn" class="mb-2">
                         <button id="check-result" type="button" class="btn btn-primary w-75">Kiểm tra</button>
                     </div>
-                    <button id="btn-end" type="button" class="btn btn-danger w-75">Kết thúc</button>
+                    <button data-bs-toggle="modal" data-bs-target="#modal-end-study" type="button" class="btn btn-danger w-75">Kết thúc</button>
+
+                    <!-- <button id="btn-end" type="button" class="btn btn-danger w-75">Kết thúc</button> -->
                     <!-- <a href="{% url 'cardgroups:end_study' cardgroup_pk %}" class="btn btn-danger w-75">Kết thúc</a> -->
                 </div>
             </div>
         </div>
     </div>
     <div class="col-3"></div>
+</div>
+<div class="modal fade" data-bs-backdrop="static" id="modal-end-study">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thông báo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <span>Bạn chắc chắn muốn kết thúc quá trình ôn bài này?</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Trở lại</button>
+                <button id="confirm-end-study" type="button" class="btn btn-danger">Kết thúc</button>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="{% static 'cardgroups/js/study.js' %}"></script>

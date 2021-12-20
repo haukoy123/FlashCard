@@ -112,13 +112,10 @@ class UpdateGroup(generic.UpdateView):
 
 @login_required()
 def StudyView(request, pk):
-
-
     if request.method == 'GET':
         return redirect('cardgroups:group_details', pk)
 
     card_group = get_object_or_404(CardGroup, pk=pk, user=request.user)
-
     expire_date = set_expire_date(request, card_group)
     if expire_date is None:
         return redirect('cardgroups:group_details', pk)
@@ -144,7 +141,6 @@ def StudyView(request, pk):
         return render(request, 'cardgroups/study.html', context)
     # else:
         # expire_date = set_expire_date(request)
-
     update_card_group_last(card_group)
     cards = get_list_or_404(Card, card_group_id=pk, card_group__user=request.user)
     random.shuffle(cards)
@@ -153,6 +149,7 @@ def StudyView(request, pk):
     index = index_of_selected_card(request)
     set_session_card(request, index)
     set_session_expire_date(request, expire_date)
+    set_session_statistics(request)
     update_prority_level(request, index)
 
     html = get_html(
@@ -201,7 +198,7 @@ def set_session_expire_date(request, expire_date):
         request.session['expire_date'] = expire_date
 
 
-def set_session_statistics(request, result=True):
+def set_session_statistics(request, result=None):
     try:
         answered_correctly = request.session['statistics']['answered_correctly']
         answered_wrong = request.session['statistics']['answered_wrong']
@@ -209,10 +206,11 @@ def set_session_statistics(request, result=True):
         answered_correctly = 0
         answered_wrong = 0
 
-    if result:
-        answered_correctly += 1
-    else:
-         answered_wrong += 1
+    if result is not None:
+        if result:
+            answered_correctly += 1
+        else:
+            answered_wrong += 1
 
     statistics = {
         'answered_correctly': answered_correctly,
@@ -296,6 +294,7 @@ def ContinueStudyingView(request, pk):
             html = get_html(request, template_name, {'card': request.session.get('card'), 'cardgroup_pk': pk})
             return JsonResponse({'card': request.session.get('card'), 'html': html}, status=200)
         else:
+            messages.info(request, 'Thời gian ôn tập của bạn đã hết')
             return EndStudy(request, pk)
             # return JsonResponse({'expired': True, 'redirect': reverse('cardgroups:group_details', args=[pk])})
     return redirect('cardgroups:group_details', pk)

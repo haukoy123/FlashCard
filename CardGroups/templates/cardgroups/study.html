@@ -21,7 +21,7 @@
     <div id="card_content" class="container">
         {{ html }}
     </div>
-    <span class="d-hidden" id="study-end-url" data-url="{% url 'cardgroups:end_study' cardgroup.pk %}"></span>
+    <span class="d-hidden" id="end-study-url" data-url="{% url 'cardgroups:end_study' cardgroup.pk %}"></span>
     <span class="d-hidden" id="check-card-url" data-url="{% url 'cardgroups:check_result' cardgroup.pk %}"></span>
     <span class="d-hidden" id="next-card-url" data-url="{% url 'cardgroups:continues_studying' cardgroup.pk %}"></span>
 </div>

@@ -1,3 +1,4 @@
+{% load static %}
 {% load mathfilters %}
 <div class="row">
     <div class="col-3">
@@ -39,3 +40,21 @@
     <div class="col-3">
     </div>
 </div>
+{% if messages %}
+{% for message in messages %}
+<div class="position-fixed bottom-0 end-0 p-3 messages" style="z-index: 10001">
+    <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header" style="background: #004aad;">
+            <img src="{% static 'public/images/Flashcard.png' %}" class="rounded me-2" width="100px" alt="">
+            <strong class="me-auto text-white fw-normal"></strong>
+            <small class="text-white">Vừa xong</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            {{ message }}
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+<script src="{% static 'public/js/base.js' %}"></script>

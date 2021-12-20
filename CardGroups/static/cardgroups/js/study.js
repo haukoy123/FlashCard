@@ -41,13 +41,14 @@ function ShowResult(response) {
 }
 
 
-$("#btn-end").on("click", function() {
-    console.log('hello')
-    $url = $('#study-end-url').data('url');
+$("#confirm-end-study").on("click", function() {
+    console.log('hello2')
+    $url = $('#end-study-url').data('url');
     $.ajax({
         type: "get",
         url: $url,
         // data: "data",
         success: ShowCard,
     });
+    $('#modal-end-study').modal('hide');
 })
