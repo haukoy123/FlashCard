@@ -230,6 +230,8 @@ def update_card_group_last(card_group):
 
 
 def check_session(request, pk):
+    # REVIEW 1: cần đặt tên hàm cụ thể hơn hoặc viết docstring
+    # REVIEW 2: nên xuống dòng
     if request.session.get('data') and request.session.get('expire_date') and request.session.get('card') and request.session.get('card')['card']['card_group'] == pk:
         expire_date = parser.parse(request.session.get('expire_date'))
         if expire_date > timezone.now():
@@ -247,6 +249,7 @@ def set_expire_date(request, card_group):
         return None
 
     if isinstance(duration, datetime):
+        # REVIEW: phép cộng giữa datetime với datetime không thực hiện được
         return timezone.now() + duration
     return timezone.now() + timedelta(minutes=duration)
 
@@ -347,6 +350,7 @@ def check_time(back, real_time):
 @login_required()
 def EndStudy(request, pk):
     try:
+        # REVIEW: nên code sao để nếu 1 key nào đó ko có trong request.session thì các key khác vẫn phải del thành công
         statistics = request.session['statistics']
         del request.session['card']
         del request.session['data']
