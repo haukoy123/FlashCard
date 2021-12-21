@@ -1,6 +1,5 @@
 
 $("#next-card").on("click", function() {
-    console.log('hello')
     $url = $('#next-card-url').data('url');
     $.ajax({
         type: "get",
@@ -12,14 +11,9 @@ $("#next-card").on("click", function() {
 
 
 function ShowCard(response) {
-    if (response.expired === true) {
-        window.location.replace(response.redirect)
-    }
-    else {
-        $('#card_content').empty();
-        $('#card_content').html(response.html)
-    }
-
+    // console.log(response.card.card)
+    $('#card_content').empty();
+    $('#card_content').html(response.html);
 }
 
 

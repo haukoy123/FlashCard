@@ -16,7 +16,7 @@ from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from dateutil import parser
 from django.contrib import messages
-
+from django.db.models import F
 from django.template import loader
 
 
@@ -137,10 +137,9 @@ def StudyView(request, pk):
     }
 
     if check_session(request, pk):
-        # expire_date = parser.parse(request.session.get('expire_date'))
+        set_session_expire_date(request, expire_date)
         return render(request, 'cardgroups/study.html', context)
-    # else:
-        # expire_date = set_expire_date(request)
+
     update_card_group_last(card_group)
     cards = get_list_or_404(Card, card_group_id=pk, card_group__user=request.user)
     random.shuffle(cards)
@@ -185,7 +184,8 @@ def set_session_data(request, cards):
 def set_session_card(request, index):
     data = request.session.get('data')
     card = data[index]['card'].copy()
-    card.pop('back')
+    face_to_answer = random.choice(['front', 'back'])
+    card.pop(face_to_answer)
     start_time = timezone.now()
 
     request.session['card'] = {'index': index, 'card': card, 'start_time': str(start_time)}
@@ -222,15 +222,16 @@ def set_session_statistics(request, result=None):
 
 def update_card_group_last(card_group):
     card_group.last_study_at = timezone.now()
-    study_count_last = card_group.study_count
-    card_group.study_count = study_count_last + 1
+    card_group.study_count = F('study_count') + 1
     card_group.save()
 
 
 def check_session(request, pk):
-    # REVIEW 1: cần đặt tên hàm cụ thể hơn hoặc viết docstring
-    # REVIEW 2: nên xuống dòng
-    if request.session.get('data') and request.session.get('expire_date') and request.session.get('card') and request.session.get('card')['card']['card_group'] == pk:
+    if (request.session.get('data') and
+        request.session.get('expire_date') and
+        request.session.get('card') and
+        request.session.get('statistics') and
+        request.session.get('card')['card']['card_group'] == pk):
         expire_date = parser.parse(request.session.get('expire_date'))
         if expire_date > timezone.now():
             return True
@@ -246,8 +247,7 @@ def set_expire_date(request, card_group):
         messages.error(request, 'Thời gian ôn tập phải là số nguyên dương')
         return None
 
-    if isinstance(duration, datetime):
-        # REVIEW: phép cộng giữa datetime với datetime không thực hiện được
+    if isinstance(duration, timedelta):
         return timezone.now() + duration
     return timezone.now() + timedelta(minutes=duration)
 
@@ -299,7 +299,6 @@ def ContinueStudyingView(request, pk):
         else:
             messages.info(request, 'Thời gian ôn tập của bạn đã hết')
             return EndStudy(request, pk)
-            # return JsonResponse({'expired': True, 'redirect': reverse('cardgroups:group_details', args=[pk])})
     return redirect('cardgroups:group_details', pk)
 
 
@@ -309,25 +308,39 @@ def ContinueStudyingView(request, pk):
 def CheckResult(request, pk):
     session_card = request.session.get('card')
     card = request.session.get('data')[session_card['index']]['card']
-    answered_back = request.POST.get('back')
-    back = card['back']
+    
+    if session_card['card'].get('front'):
+        answered = request.POST.get('back')
+        correct_answer= card['back']
+    else:
+        answered = request.POST.get('front')
+        correct_answer = card['front']
 
     time_start = parser.parse(session_card['start_time'])
     time_answered = timezone.now() - time_start
 
     result = False
     speed = None
-    if answered_back.strip().casefold() == back.strip().casefold():
+    if answered.strip().casefold() == correct_answer.strip().casefold():
         result = True
         speed = check_time(card['back'].strip().casefold(), time_answered)
-    
-    set_session_statistics(request, result)
+
+    set_session_statistics(request, result=result)
 
     update_prority_level(request, session_card['index'], speed, result)
     template_name = 'cardgroups/show_result_in_study_screen.html'
-    html = get_html(request, template_name, {'result': result, 'card': card, 'cardgroup_pk': pk, 'answered_back': answered_back})
+    html = get_html(request, template_name, {
+        'result': result,
+        'card': session_card,
+        'cardgroup_pk': pk,
+        'answered': answered,
+        'correct_answer': correct_answer
+    })
 
-    return JsonResponse({'result': result, 'card': card, 'data': request.session.get('data'), 'html': html}, status=200)
+    return JsonResponse({
+        'data': request.session.get('data'),
+        'html': html
+        }, status=200)
 
 
 
@@ -349,14 +362,16 @@ def check_time(back, real_time):
 @login_required()
 def EndStudy(request, pk):
     try:
-        # REVIEW: nên code sao để nếu 1 key nào đó ko có trong request.session thì các key khác vẫn phải del thành công
         statistics = request.session['statistics']
-        del request.session['card']
-        del request.session['data']
-        del request.session['statistics']
-        del request.session['expire_date']
     except KeyError:
-        return redirect('cardgroups:group_details', pk)
+        statistics = {
+            'answered_correctly': 0,
+            'answered_wrong': 0
+        }
+
+    for key in ['card', 'data', 'statistics', 'expire_date']:
+        if key in request.session:
+            del request.session[key]
 
     if request.is_ajax():
         template_name = 'cardgroups/show_statistics_in_study_screen.html'

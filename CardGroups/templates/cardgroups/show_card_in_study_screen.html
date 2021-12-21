@@ -4,6 +4,7 @@
     <div class="col-3">
     </div>
     <div class="col-6">
+        {% if card.card.front %}
         <div class="mb-3">
             <label class="mb-2"> Mặt trước</label>
             <br>
@@ -15,9 +16,25 @@
                 {% csrf_token %}
                 <label for="id_back" class="mb-2">Mặt sau</label>
                 <br>
-                <textarea name="back" id="id_back" autofocus="autofocus" cols="50" rows="5" class="w-100"></textarea>
+                <textarea name="back" id="id_back" autofocus cols="50" rows="5" class="w-100"></textarea>
             </form>
         </div>
+        {% else %}
+        <div class="mb-3">
+            <label class="mb-2"> Mặt sau</label>
+            <br>
+            <textarea name="" id="id_back" cols="50" disabled rows="5"
+                class="w-100 text-black bg-white">{{ card.card.back }}</textarea>
+        </div>
+        <div class="mb-3">
+            <form id="form-check-result" method="post">
+                {% csrf_token %}
+                <label for="id_front" class="mb-2">Mặt trước</label>
+                <br>
+                <textarea name="front" id="id_front" autofocus cols="50" rows="5" class="w-100"></textarea>
+            </form>
+        </div>
+        {% endif %}
     </div>
     <div class="col-3">
     </div>
