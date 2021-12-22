@@ -3,11 +3,11 @@
 {% load static %}
 
 {% block head %}
-    <title>Tạo chồng mới</title>
+<title>Tạo chồng mới</title>
 {% endblock%}
 
 {% block header %}
-    {% include "public/header_logout.html" %}
+{% include "public/header_logout.html" %}
 {% endblock %}
 
 {% block content %}
@@ -15,7 +15,7 @@
     <div class="text-center mb-3">
         <span class="h3 fw-bold">Card mới</span>
     </div>
-    <form method="post" class="col-7 mx-auto">
+    <form method="post" class="col-7 mx-auto px-4">
         {% csrf_token %}
         <div class="mb-3">
             <label for="id_card_group">Chồng:</label>
@@ -23,7 +23,7 @@
             <span class="float-end">Số card: {{ group.card_count }}</span>
             {{ form.card_group }}
             {% if form.card_group.errors %}
-                {{ form.card_group.errors }}
+            {{ form.card_group.errors }}
             {% endif %}
         </div>
 
@@ -32,23 +32,25 @@
             <label for="id_front">Mặt trước:</label>
             {{ form.front }}
             {% if form.front.errors %}
-                {{ form.front.errors }}
+            {{ form.front.errors }}
             {% endif %}
         </div>
         <div class="mb-3">
             <label for="id_front">Mặt sau:</label>
             {{ form.back }}
             {% if form.back.errors %}
-                {{ form.back.errors }}
+            {{ form.back.errors }}
             {% endif %}
         </div>
         <div class="text-center">
-            <button formaction="{% url 'cards:create_card' pk=group.pk btn='continue' %}" type="submit" class="btn bg-primary col-3 text-white">Thêm card</button>
-            <button id="btn_done" formaction="{% url 'cards:create_card' pk=group.pk btn='done' %}" type="submit" class="btn bg-success col-3 text-white display-none">Xong</button>
-            <a id="link_done" href="{% url 'cardgroups:learn' %}" class="btn bg-success col-3 text-white">Xong</a>
+            <button formaction="{% url 'cards:create_card' pk=group.pk btn='continue' %}" type="submit"
+                class="btn bg-primary btn-width text-white">Thêm card</button>
+            <button id="btn_done" formaction="{% url 'cards:create_card' pk=group.pk btn='done' %}" type="submit"
+                class="btn bg-success btn-width text-white display-none">Xong</button>
+            <a id="link_done" href="{% url 'cardgroups:learn' %}" class="btn bg-success btn-width text-white">Xong</a>
             <div>
                 {% if form.non_field_errors %}
-                    {{ form.non_field_errors }}
+                {{ form.non_field_errors }}
                 {% endif %}
             </div>
         </div>

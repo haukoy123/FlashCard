@@ -1,7 +1,7 @@
 body {
     background-color: #d8d8d8;
-    font-family: din-round,sans-serif;
-    /* font-family: 'Baloo Tamma 2' */
+    /* font-family: din-round,sans-serif; */
+    font-family: 'Baloo Tamma 2'
 }
 
 .login_form {
@@ -25,10 +25,11 @@ body {
     box-shadow: 3px 3px #ffeb3b, 6px 6px #4caf50, 9px 9px #ff57229e, 12px 12px 5px #2f2f2f;
 }
 .create-group {
-    background: #8500ffeb;
+    background: #e8b314;
     text-decoration: none;
-    color: #fffcfc;
+    color: #0000af;
     border-radius: 20px 0px 0px 20px;
+    opacity: 70%;
 }
 
 .btn-edit:hover {
@@ -122,6 +123,84 @@ body {
 
 
 .fieldset {
-        padding: revert;
-        border: 1px solid;
+    padding: revert;
+    border: 1px solid;
+}
+
+
+.img-width {
+    width: 230px;
+}
+
+
+.mg-x-150 {
+    margin: 0 150px 0 150px;
+}
+
+
+.w-search {
+    width: 350px;
+}
+
+
+.z-index-1 {
+    z-index: 1;
+}
+
+
+#id_new_password {
+    margin: auto;
+}
+
+
+.btn-width {
+    width: 25%;
+}
+
+
+#end-study, #next-card, #check-result {
+    width: 100%;
+}
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+
+    [class*="col-"] {
+        width: 100%;
+      }
+
+    .img-width {
+        width: 150px;
+    }
+
+    .w-search {
+        width: auto;
+    }
+
+    .row-cols-md-2 {
+        margin: 0px;
+    }
+
+    .create-group {
+        font-size: 15px;
+    }
+
+    #liveToast {
+        width: auto;
+    }
+
+    #end-study, #next-card, #check-result {
+        width: 50%;
+    }
+
+    .btn-width {
+        width: 100px;
+    }
+
+}
+
+
+@media only screen and (min-width: 768px) {
+/* For tablets: */
+
 }

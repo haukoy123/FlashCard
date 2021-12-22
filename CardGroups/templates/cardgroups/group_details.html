@@ -6,11 +6,11 @@
 
 
 {% block head %}
-    <title>Chi tiết chồng Card</title>
+<title>Chi tiết chồng Card</title>
 {% endblock%}
 
 {% block header %}
-    {% include "public/header_logout.html" %}
+{% include "public/header_logout.html" %}
 {% endblock %}
 
 {% block content %}
@@ -25,7 +25,8 @@
             <div class="col-4">
                 <div id="group-details" class="card mb-3">
                     <div class="card-header text-center bg-card-group">
-                        <button type="button" data-bs-toggle="tooltip" title="Sửa" class="btn-edit float-end bg-card-group"><i class="far fa-edit"></i></button>
+                        <button type="button" data-bs-toggle="tooltip" title="Sửa"
+                            class="btn-edit float-end bg-card-group"><i class="far fa-edit"></i></button>
                         <span>Thông tin chồng</span>
                     </div>
                     <div class="card-body">
@@ -67,20 +68,21 @@
                                 <label for="id_name">Tên chồng:</label>
                                 {{ form.name }}
                                 {% if form.name.errors %}
-                                    {{ form.name.errors }}
+                                {{ form.name.errors }}
                                 {% endif %}
                             </div>
                             <div class="mx-auto mb-3">
                                 <label for="id_study_duration">Thời gian học(phút):</label>
                                 {{ form.study_duration }}
                                 {% if form.study_duration.errors %}
-                                    {{ form.study_duration.errors }}
+                                {{ form.study_duration.errors }}
                                 {% endif %}
                             </div>
                             <div class="mb-3 text-center">
-                                <button type="submit" class="btn btn-primary col-4">Lưu</button>
+                                <button type="submit" class="btn btn-primary w-25"><i class="far fa-save"></i>
+                                    Lưu</button>
                                 {% if form.non_field_errors %}
-                                    {{ form.non_field_errors }}
+                                {{ form.non_field_errors }}
                                 {% endif %}
                             </div>
                         </form>
@@ -91,19 +93,19 @@
                         {% csrf_token %}
                         <div class="mb-3 d-inline-block w-100">
                             <label for="id_new_study_duration">Thời gian ôn bài(phút):</label>
-    
+
                             <input type="number" name="new_study_duration" class="form-control w-25 float-end py-0"
-                            id="id_new_study_duration" value="{{ cardgroup.study_duration|minutes }}"> 
+                                id="id_new_study_duration" value="{{ cardgroup.study_duration|minutes }}">
                         </div>
                         <button type="submit" class="btn btn-success w-100">Ôn bài</button>
-                        <!-- <a href="{% url 'cardgroups:study_group' cardgroup.pk %}" class="btn btn-success w-100">Ôn bài</a> -->
                     </form>
                 </div>
             </div>
             <div class="col-8 bg-list-card">
                 <div class="text-center fw-bold my-2 h5">
                     Danh sách card
-                    <a href="{% url 'cards:create_card' cardgroup.pk 'begin' %}" class="float-end text-black" data-bs-toggle="tooltip" title="Thêm card"><i class="fas fa-plus"></i></a>
+                    <a href="{% url 'cards:create_card' cardgroup.pk 'begin' %}" class="float-end text-black"
+                        data-bs-toggle="tooltip" title="Thêm card"><i class="fas fa-plus"></i></a>
                 </div>
                 <div class="px-3">
                     {% for card in cards_page %}
@@ -117,9 +119,11 @@
                                     <p class="card-text">{{ card.front }}</p>
                                 </div>
                                 <div class="m-1 fs-page-card">
-                                    <div class="float-end">{{ cards_page.number|sub:1|mul:cards_page.paginator.per_page|add:forloop.counter }}/{{ cards_page.paginator.count }}</div>
+                                    <div class="float-end">
+                                        {{ cards_page.number|sub:1|mul:cards_page.paginator.per_page|add:forloop.counter}}/{{ cards_page.paginator.count }}
+                                    </div>
                                 </div>
-                              </div>
+                            </div>
                         </div>
                         <div class="col-6">
                             <div class="card text-center background-card">
@@ -130,14 +134,16 @@
                                     <p class="card-text">{{ card.back }}</p>
                                 </div>
                                 <div class="m-1 fs-page-card">
-                                    <div class="float-end">{{ cards_page.number|sub:1|mul:cards_page.paginator.per_page|add:forloop.counter }}/{{ cards_page.paginator.count }}</div>
+                                    <div class="float-end">{{cards_page.number|sub:1|mul:cards_page.paginator.per_page|add:forloop.counter}}/{{ cards_page.paginator.count }}</div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-12 mb-3">
                             <div class="text-center">
-                                <button type="button" data-bs-toggle="modal" data-bs-target="#update_card_{{ card.pk }}" class="btn bg-primary text-white col-2"><i class="far fa-edit"></i> Sửa</button>
-                                <button type="button" data-bs-toggle="modal" data-bs-target="#delete_card_{{ card.pk }}" class="btn bg-danger text-white col-2"><i class="far fa-trash-alt"></i> Xóa</button>
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#update_card_{{ card.pk }}"
+                                    class="btn bg-primary text-white w-25"><i class="far fa-edit"></i> Sửa</button>
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#delete_card_{{ card.pk }}"
+                                    class="btn bg-danger text-white w-25"><i class="far fa-trash-alt"></i> Xóa</button>
                             </div>
                         </div>
                     </div>
@@ -146,7 +152,8 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Thông báo</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     <span>Bạn chắc chắn muốn xóa card này?</span>
@@ -161,20 +168,25 @@
                             </div>
                         </div>
                     </div>
-                {% endfor %}
+                    {% endfor %}
                 </div>
                 {% for card_form in cards_forms %}
-                <div class="modal fade" id="update_card_{{ card_form.instance.pk }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal fade" id="update_card_{{ card_form.instance.pk }}" data-bs-backdrop="static"
+                    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="staticBackdropLabel">Sửa card</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
-                            <form action="{% url 'cards:update_card' cardgroup.pk card_form.instance.pk cards_page.number %}" method="post">
+                            <form
+                                action="{% url 'cards:update_card' cardgroup.pk card_form.instance.pk cards_page.number %}"
+                                method="post">
                                 {% csrf_token %}
                                 <div class="modal-body">
-                                    <input type="hidden" disabled id="id_card_group" name="card_group" value="{{ cardgroup.pk }}">
+                                    <input type="hidden" disabled id="id_card_group" name="card_group"
+                                        value="{{ cardgroup.pk }}">
                                     <label for="id_front">Mặt trước</label>
                                     <div class="mb-3">
                                         {{ card_form.front }}
@@ -197,48 +209,58 @@
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-center">
                             {% if cards_page.has_previous %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">First</a>
-                                </li>
-                                {% if cards_page.has_next is False %}
-                                    {% if cards_page.previous_page_number|sub:1 > 0 %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ cards_page.previous_page_number|sub:1 }}">{{ cards_page.previous_page_number|sub:1 }}</a>
-                                    </li>
-                                    {% endif %}
-                                {% endif %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ cards_page.previous_page_number }}">{{ cards_page.previous_page_number }}</a>
-                                </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">First</a>
+                            </li>
+                            {% if cards_page.has_next is False %}
+                            {% if cards_page.previous_page_number|sub:1 > 0 %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ cards_page.previous_page_number|sub:1 }}">
+                                    {{cards_page.previous_page_number|sub:1 }}
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% endif %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ cards_page.previous_page_number }}">
+                                    {{cards_page.previous_page_number }}
+                                </a>
+                            </li>
                             {% else %}
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">First</a>
-                                </li>
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">First</a>
+                            </li>
                             {% endif %}
 
-                                <li class="page-item">
-                                    <a class="page-link background-card-header" href="?page={{ cards_page.number }}">{{ cards_page.number }}</a>
-                                </li>
+                            <li class="page-item">
+                                <a class="page-link background-card-header" href="?page={{ cards_page.number }}">
+                                    {{cards_page.number }}
+                                </a>
+                            </li>
 
                             {% if cards_page.has_next %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ cards_page.next_page_number }}">{{ cards_page.next_page_number }}</a>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ cards_page.next_page_number }}">
+                                    {{cards_page.next_page_number }}
+                                </a>
+                            </li>
+                            {% if cards_page.has_previous is False %}
+                            {% if cards_page.next_page_number|add:1 <= cards_page.paginator.num_pages %} <li
+                                class="page-item">
+                                <a class="page-link" href="?page={{ cards_page.next_page_number|add:1 }}">
+                                    {{cards_page.next_page_number|add:1 }}
+                                </a>
                                 </li>
-                                {% if cards_page.has_previous is False %}
-                                    {% if cards_page.next_page_number|add:1 <= cards_page.paginator.num_pages %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ cards_page.next_page_number|add:1 }}">{{ cards_page.next_page_number|add:1 }}</a>
-                                    </li>
-                                    {% endif %}
+                                {% endif %}
                                 {% endif %}
                                 <li class="page-item">
                                     <a class="page-link" href="?page={{ cards_page.paginator.num_pages }}">Last</a>
                                 </li>
-                            {% else %}
+                                {% else %}
                                 <li class="page-item disabled">
                                     <a class="page-link" href="#">Last</a>
                                 </li>
-                            {% endif %}
+                                {% endif %}
                         </ul>
                     </nav>
                 </div>

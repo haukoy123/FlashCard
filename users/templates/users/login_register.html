@@ -73,55 +73,57 @@
                 <div class="modal-body">
                     <form action="{% url 'users:register' %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <div class="clearfix">
-                            <div class="float-start w-50 px-4">
-                                <div class="text-center">
-                                    <img id="image" class="bg-white mb-3" src="#" width="150px" height="150px"/>
-                                    <div class="">
-                                        <label for="" class="form-label mb-3">Avatar</label>
-                                        <div class="col-sm-10 mx-auto">
-                                            {{ register_form.avatar }}
-                                            {% if register_form.avatar.errors %}
-                                                {{ register_form.avatar.errors }}
+                        <div class="clearfix row">
+                            <div class="col-6 mb-3">
+                                <div class="px-4">
+                                    <div class="text-center">
+                                        <img id="image" class="bg-white mb-3" src="#" width="150px" height="150px"/>
+                                        <div class="">
+                                            <label for="" class="form-label mb-1">Avatar</label>
+                                            <div class="col-10 mx-auto">
+                                                {{ register_form.avatar }}
+                                                {% if register_form.avatar.errors %}
+                                                    {{ register_form.avatar.errors }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="px-4">
+                                    <div class="mb-3">
+                                        <label for="" class="form-label">Username</label>
+                                        <div class="col-sm-12">
+                                            {{ register_form.username}}
+                                            {% if register_form.username.errors %}
+                                                {{ register_form.username.errors }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="" class="form-label">Email</label>
+                                        <div class="col-12">
+                                            {{ register_form.email }}
+                                            {% if register_form.email.errors %}
+                                                {{ register_form.email.errors }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="" class="form-label">Password</label>
+                                        <div class="col-sm-12">
+                                            {{ register_form.password}}
+                                            {% if register_form.password.errors %}
+                                                {{ register_form.password.errors }}
                                             {% endif %}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="float-end w-50 px-4">
-                                <div class="mb-3">
-                                    <label for="" class="form-label">Username</label>
-                                    <div class="col-sm-12">
-                                        {{ register_form.username}}
-                                        {% if register_form.username.errors %}
-                                            {{ register_form.username.errors }}
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="" class="form-label">Email</label>
-                                    <div class="col-12">
-                                        {{ register_form.email }}
-                                        {% if register_form.email.errors %}
-                                            {{ register_form.email.errors }}
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="" class="form-label">Password</label>
-                                    <div class="col-sm-12">
-                                        {{ register_form.password}}
-                                        {% if register_form.password.errors %}
-                                            {{ register_form.password.errors }}
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
                         <div class="mb-3 text-center">
-                            <input class="btn btn-success col-sm-3" type="submit" value="Đăng ký">
+                            <input class="btn btn-success w-25" type="submit" value="Đăng ký">
                             {% if register_form.non_field_errors %}
                                 {{ register_form.non_field_errors }}
                             {% endif %}

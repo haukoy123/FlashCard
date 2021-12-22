@@ -13,12 +13,12 @@ $(".card-group").hover(function() {
 $(".create-group").hover(
     function() {
         $(this).css({
-            'color': 'white',
+            'color': '#0000af',
             "box-shadow": "6px 6px 5px #2f2f2f"
         })
     }, function() {
         $(this).css({
-            'color': 'white',
+            'color': '#0000af',
             "box-shadow":'none'
         })
     }

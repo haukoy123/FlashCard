@@ -101,7 +101,6 @@ class SetPasswordFormCustom(forms.Form):
         label=_("New password"),
         widget=forms.PasswordInput(attrs={
             'autocomplete': 'new-password',
-            'style': 'width: 300px;',
             'class': 'form-control'
         }),
     )
