@@ -112,13 +112,22 @@ class UpdateGroup(generic.UpdateView):
 
 @login_required()
 def StudyView(request, pk):
-    if request.method == 'GET':
-        return redirect('cardgroups:group_details', pk)
-
     card_group = get_object_or_404(CardGroup, pk=pk, user=request.user)
+    
     expire_date = set_expire_date(request, card_group)
-    if expire_date is None:
-        return redirect('cardgroups:group_details', pk)
+    if request.method == 'GET':
+         expire_date = set_expire_date(request, card_group)
+        # return redirect('cardgroups:group_details', pk)
+    update_card_group_last(card_group)
+    cards = get_list_or_404(Card, card_group_id=pk, card_group__user=request.user)
+    random.shuffle(cards)
+
+    set_session_data(request, cards)
+    index = index_of_selected_card(request)
+    set_session_card(request, index)
+    set_session_expire_date(request, expire_date)
+    set_session_statistics(request)
+    update_prority_level(request, index)
 
     template_name = 'cardgroups/show_card_in_study_screen.html'
     html = get_html(
@@ -135,32 +144,6 @@ def StudyView(request, pk):
         'expiredate': expire_date,
         'html': html
     }
-
-    if check_session(request, pk):
-        set_session_expire_date(request, expire_date)
-        return render(request, 'cardgroups/study.html', context)
-
-    update_card_group_last(card_group)
-    cards = get_list_or_404(Card, card_group_id=pk, card_group__user=request.user)
-    random.shuffle(cards)
-
-    set_session_data(request, cards)
-    index = index_of_selected_card(request)
-    set_session_card(request, index)
-    set_session_expire_date(request, expire_date)
-    set_session_statistics(request)
-    update_prority_level(request, index)
-
-    html = get_html(
-        request,
-        template_name,
-        {
-            'card': request.session.get('card'),
-            'cardgroup_pk': pk
-        }
-    )
-    context['card'] = request.session.get('card')
-    context['html'] = html
 
     return render(request, 'cardgroups/study.html', context)
 
@@ -199,13 +182,8 @@ def set_session_expire_date(request, expire_date):
 
 
 def set_session_statistics(request, result=None):
-    try:
-        answered_correctly = request.session['statistics']['answered_correctly']
-        answered_wrong = request.session['statistics']['answered_wrong']
-    except KeyError:
-        answered_correctly = 0
-        answered_wrong = 0
-
+    answered_correctly = 0
+    answered_wrong = 0
     if result is not None:
         if result:
             answered_correctly += 1
@@ -308,7 +286,7 @@ def ContinueStudyingView(request, pk):
 def CheckResult(request, pk):
     session_card = request.session.get('card')
     card = request.session.get('data')[session_card['index']]['card']
-    
+
     if session_card['card'].get('front'):
         answered = request.POST.get('back')
         correct_answer= card['back']

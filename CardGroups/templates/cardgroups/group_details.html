@@ -22,7 +22,7 @@
     </div>
     <div class="container">
         <div class="row">
-            <div class="col-4">
+            <div class="col-sm-12 col-md-4">
                 <div id="group-details" class="card mb-3">
                     <div class="card-header text-center bg-card-group">
                         <button type="button" data-bs-toggle="tooltip" title="Sửa"
@@ -101,7 +101,7 @@
                     </form>
                 </div>
             </div>
-            <div class="col-8 bg-list-card">
+            <div class="col-sm-12 col-md-8 bg-list-card">
                 <div class="text-center fw-bold my-2 h5">
                     Danh sách card
                     <a href="{% url 'cards:create_card' cardgroup.pk 'begin' %}" class="float-end text-black"
@@ -110,7 +110,7 @@
                 <div class="px-3">
                     {% for card in cards_page %}
                     <div class="row g-2">
-                        <div class="col-6 mb-3">
+                        <div class="col-sm-12 col-md-6 mb-3">
                             <div class="card text-center">
                                 <div class="card-header background-card-header">
                                     Mặt trước
@@ -125,7 +125,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-sm-12 col-md-6">
                             <div class="card text-center background-card">
                                 <div class="card-header background-card-header">
                                     Mặt sau

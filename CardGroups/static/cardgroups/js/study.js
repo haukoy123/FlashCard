@@ -14,6 +14,7 @@ function ShowCard(response) {
     // console.log(response.card.card)
     $('#card_content').empty();
     $('#card_content').html(response.html);
+    $('.txt_keyboard_events').focus();
 }
 
 
@@ -32,11 +33,12 @@ function ShowResult(response) {
     console.log(response.data)
     $('#card_content').empty();
     $('#card_content').html(response.html);
+    $('.txt_keyboard_events').focus();
+    $('.txt_keyboard_events').popover('show');
 }
 
 
 $("#confirm-end-study").on("click", function() {
-    console.log('hello2')
     $url = $('#end-study-url').data('url');
     $.ajax({
         type: "get",
@@ -46,3 +48,24 @@ $("#confirm-end-study").on("click", function() {
     });
     $('#modal-end-study').modal('hide');
 })
+
+
+$('.txt_keyboard_events').on('keydown',function (e) {
+    if (e.ctrlKey && e.keyCode == 13) {
+        const check_result = $('#check-result');
+        if(check_result.length===1){
+            check_result.click();
+        }
+        else{
+            const next_card = $('#next-card');
+            if(next_card.length===1){
+                next_card.click();
+            }
+        }
+    }
+});
+
+
+$(".txt_keyboard_events").on("keydown", function(){
+    $('.txt_keyboard_events').popover('show');
+});

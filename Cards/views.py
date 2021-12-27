@@ -1,4 +1,3 @@
-from django.http.response import Http404
 from django.views import generic
 from django.shortcuts import get_object_or_404, redirect, render
 from Cards.models import Card
@@ -8,6 +7,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.db.models import Count
+from django.contrib import messages
 
 
 
@@ -62,4 +62,7 @@ def UpdateCard(request, id_group, id_card, page):
         form = CardForm(instance=instance, data={**request.POST.dict(), 'card_group': id_group})
         if form.is_valid():
             form.save()
+        else:
+            messages.error(request, 'Cập nhật card thất bại')
+
     return redirect(reverse('cardgroups:group_details', args=[id_group]) + '?page=' + str(page))

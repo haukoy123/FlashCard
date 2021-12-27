@@ -18,10 +18,10 @@
     <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row my-3">
-            <div class="col-2">
+            <div class="col-sm-12 col-md-2">
             </div>
-            <div class="col-8 row">
-               <div class="col-6">
+            <div class="col-sm-12 col-md-8 row">
+               <div class="col-sm-12 col-md-6">
                     <div class="p-2 mx-3 text-center">
                         {% if form.instance.avatar %}
                         <img id='get_avatar' src="{{ form.instance.avatar.url }}" alt="" width='250px' height="250px">
@@ -31,7 +31,7 @@
                         <div class="mt-1">Ảnh đại diện</div>
                     </div>
                </div>
-                <div class="col-6">
+                <div class="col-sm-12 col-md-6">
                     <div class="p-2 mx-3">
                         <div>
                             <label for="id_username">Tên đăng nhập:</label>
@@ -57,7 +57,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-2">
+            <div class="col-sm-12 col-md-2">
             </div>
         </div>
         <div class="text-center">

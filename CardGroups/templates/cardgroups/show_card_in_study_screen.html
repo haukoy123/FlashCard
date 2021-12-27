@@ -1,9 +1,9 @@
 {% load static %}
 
 <div class="row text-center">
-    <div class="col-3">
+    <div class="col-sm-12 col-md-3">
     </div>
-    <div class="col-6">
+    <div class="col-sm-12 col-md-6">
         {% if card.card.front %}
         <div class="mb-3">
             <label class="mb-2"> Mặt trước</label>
@@ -16,7 +16,9 @@
                 {% csrf_token %}
                 <label for="id_back" class="mb-2">Mặt sau</label>
                 <br>
-                <textarea name="back" id="id_back" autofocus cols="50" rows="5" class="w-100"></textarea>
+                <textarea name="back" data-bs-toggle="popover" data-bs-trigger="focus"
+                    data-bs-content="Ctrl + Enter để kiểm tra kết quả" id="id_back" autofocus cols="50" rows="5"
+                    class="w-100 txt_keyboard_events"></textarea>
             </form>
         </div>
         {% else %}
@@ -31,37 +33,36 @@
                 {% csrf_token %}
                 <label for="id_front" class="mb-2">Mặt trước</label>
                 <br>
-                <textarea name="front" id="id_front" autofocus cols="50" rows="5" class="w-100"></textarea>
+                <textarea name="front" data-bs-toggle="popover" data-bs-trigger="focus"
+                    data-bs-content="Ctrl + Enter để kiểm tra kết quả" id="id_front" autofocus cols="50" rows="5"
+                    class="w-100 txt_keyboard_events"></textarea>
             </form>
         </div>
         {% endif %}
     </div>
-    <div class="col-3">
+    <div class="col-sm-12 col-md-3">
     </div>
 </div>
 <div class="row">
-    <div class="col-3"></div>
-    <div class="col-6">
+    <div class="col-sm-12 col-md-3"></div>
+    <div class="col-sm-12 col-md-6">
         <div class="row">
-            <div class="col-9">
+            <div class="col-sm-12 col-md-9">
                 <div id="show-result">
                     <span class="fw-bold">Nhấn kiểm tra để xem kết quả</span>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-sm-12 col-md-3">
                 <div class="text-center">
                     <div id="btn" class="mb-2">
                         <button id="check-result" type="button" class="btn btn-primary">Kiểm tra</button>
                     </div>
                     <button id="end-study" data-bs-toggle="modal" data-bs-target="#modal-end-study" type="button" class="btn btn-danger">Kết thúc</button>
-
-                    <!-- <button id="btn-end" type="button" class="btn btn-danger w-75">Kết thúc</button> -->
-                    <!-- <a href="{% url 'cardgroups:end_study' cardgroup_pk %}" class="btn btn-danger w-75">Kết thúc</a> -->
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-3"></div>
+    <div class="col-sm-12 col-md-3"></div>
 </div>
 <div class="modal fade" data-bs-backdrop="static" id="modal-end-study">
     <div class="modal-dialog">

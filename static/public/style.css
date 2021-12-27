@@ -162,12 +162,13 @@ body {
     width: 100%;
 }
 
+.btn-create-group {
+    bottom: 10%;
+}
+
+
 @media only screen and (max-width: 768px) {
     /* For mobile phones: */
-
-    [class*="col-"] {
-        width: 100%;
-      }
 
     .img-width {
         width: 150px;
@@ -190,7 +191,7 @@ body {
     }
 
     #end-study, #next-card, #check-result {
-        width: 50%;
+        width: 30%;
     }
 
     .btn-width {

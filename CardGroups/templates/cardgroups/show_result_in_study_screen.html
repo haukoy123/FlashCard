@@ -1,9 +1,9 @@
 {% load static %}
 
 <div class="row text-center">
-    <div class="col-3">
+    <div class="col-sm-12 col-md-3">
     </div>
-    <div class="col-6">
+    <div class="col-sm-12 col-md-6">
         {% if card.card.front %}
         <div class="mb-3">
             <label class="mb-2"> Mặt trước</label>
@@ -11,37 +11,38 @@
             <textarea name="" id="id_front" cols="50" disabled rows="5"
                 class="w-100 text-black bg-white">{{ card.card.front }}</textarea>
         </div>
-        <div class="mb-3">
+        <div class="">
             <label for="id_back" class="mb-2">Mặt sau</label>
             <br>
-            <textarea name="" id="id_front" cols="50" disabled rows="5"
-                class="w-100 text-black bg-white">{{ answered }}</textarea>
-        </div>
-        {% else %}
-        <div class="mb-3">
-            <label class="mb-2"> Mặt sau</label>
-            <br>
-            <textarea cols="50" disabled rows="5"
-                class="w-100 text-black bg-white">{{ card.card.back }}</textarea>
-        </div>
-        <div class="mb-3">
-            <label for="id_back" class="mb-2">Mặt trước</label>
-            <br>
-            <textarea cols="50" disabled rows="5"
-                class="w-100 text-black bg-white">{{ answered }}</textarea>
-        </div>
+            <textarea name="" id="id_front" cols="50" rows="5" data-bs-trigger="focus" data-bs-toggle="popover"
+                data-bs-content="Ctrl + Enter để tiếp tục"
+                class="w-100 text-black bg-white txt_keyboard_events">{{ answered }}</textarea>
+            </div>
+            {% else %}
+            <div class="mb-3">
+                <label class="mb-2"> Mặt sau</label>
+                <br>
+                <textarea cols="50" disabled rows="5" class="w-100 text-black bg-white">{{ card.card.back }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="id_back" class="mb-2">Mặt trước</label>
+                <br>
+                <textarea cols="50" rows="5" data-bs-trigger="focus" data-bs-toggle="popover"
+                    data-bs-content="Ctrl + Enter để tiếp tục"
+                    class="w-100 text-black bg-white txt_keyboard_events">{{ answered }}</textarea>
+            </div>
         {% endif %}
     </div>
-    <div class="col-3">
+    <div class="col-sm-12 col-md-3">
     </div>
 </div>
 <div class="row">
-    <div class="col-3">
+    <div class="col-sm-12 col-md-3">
 
     </div>
-    <div class="col-6">
+    <div class="col-sm-12 col-md-6">
         <div class="row">
-            <div class="col-8">
+            <div class="col-sm-9">
                 <div id="show-result">
                     {% if result is True %}
                     <span class="fw-bold fw-bold text-success h5">Tuyệt vời. Bạn ghi nhớ rất tốt</span>
@@ -52,7 +53,7 @@
                     <span class="fw-bold"><small class='fw-bold h6'>Đáp án: </small>{{ correct_answer }}</span>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-sm-3">
                 <div class="text-center">
                     <div id="btn" class="mb-2">
                         <button id="next-card" type="button" class="btn btn-primary">Tiếp tục</button>
@@ -64,7 +65,7 @@
             </div>
         </div>
     </div>
-    <div class="col-3"></div>
+    <div class="col-sm-12 col-md-3"></div>
 </div>
 <div class="modal fade" data-bs-backdrop="static" id="modal-end-study">
     <div class="modal-dialog">
