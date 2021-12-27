@@ -115,11 +115,18 @@ def StudyView(request, pk):
     card_group = get_object_or_404(CardGroup, pk=pk, user=request.user)
     
     expire_date = set_expire_date(request, card_group)
+    cards = Card.objects.filter(card_group_id=pk, card_group__user=request.user)
+
+    if not cards.exists():
+        messages.error(request, 'Không có card để học. Vui lòng thêm card')
+        return redirect(reverse('cardgroups:group_details', args=[pk]))
+
     if request.method == 'GET':
          expire_date = set_expire_date(request, card_group)
         # return redirect('cardgroups:group_details', pk)
     update_card_group_last(card_group)
-    cards = get_list_or_404(Card, card_group_id=pk, card_group__user=request.user)
+    # cards = get_list_or_404(Card, card_group_id=pk, card_group__user=request.user)
+    cards = list(cards)
     random.shuffle(cards)
 
     set_session_data(request, cards)

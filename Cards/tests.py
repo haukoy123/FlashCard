@@ -1,33 +1,17 @@
 import users
 from Cards.forms import CardForm
 from django.test import TestCase
-from Cards.models import Card
-from CardGroups.tests import CardGroupSetUp
 from django.urls import reverse
+from users.tests import SetUp
 
 
 
 
-class CardSetUp(CardGroupSetUp):
-    card_model = Card
-
-    card_data = {
-        'front': 'hello',
-        'back':'chào'
-    }
-
-    def create_card(self, data, cardgroup):
-        if data is None:
-            raise ValueError('data phải có dữ liệu')
-        card = self.card_model()
-        card.card_group = cardgroup
-        card.front = data.get('front')
-        card.back = data.get('back')
-        card.save()
-        return card
+# class CardSetUp(CardGroupSetUp):
+    
 
 
-class CardTestCase(CardSetUp):
+class CardTestCase(SetUp):
 
     def setUp(self):
         self.user = self.create_user(data=self.user_data)

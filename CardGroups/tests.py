@@ -1,34 +1,11 @@
 from django.test import TestCase
 from django.urls import reverse
 from users.tests import SetUp
-from datetime import datetime, time, timezone, timedelta
-from CardGroups.models import CardGroup
 from CardGroups.forms import CardGroupForm
+from dateutil import parser
 
 
-
-class CardGroupSetUp(SetUp):
-    cardgroup_model = CardGroup
-    cardgroup_data = {
-        'name': 'test_cardgroup',
-        'study_duration': timedelta(minutes=12),
-        'last_study_at': datetime(2020, 12, 31, 20, 30),
-        'study_count': 10
-    }
-
-    def create_cardgroup(self, data, user):
-        if data is None:
-            raise ValueError('data phải có dữ liệu')
-        cardgroup = self.cardgroup_model()
-        cardgroup.user = user
-        cardgroup.name = data.get('name')
-        cardgroup.study_duration = data.get('study_duration')
-        cardgroup.study_duration = data.get('study_duration')
-        cardgroup.save()
-        return cardgroup
-
-
-class CardGroupTestCase(CardGroupSetUp):
+class CardGroupTestCase(SetUp):
 
     def setUp(self):
         self.user = self.create_user(data=self.user_data)
@@ -117,3 +94,40 @@ class CardGroupTestCase(CardGroupSetUp):
         cardgroup = self.cardgroup_model.objects.filter(pk=cardgroup_pk)
         self.assertEqual(0, cardgroup.count())
         self.assertRedirects(response, reverse('cardgroups:learn'), 302, 200)
+
+
+class StudyTestCase(SetUp):
+
+    def setUp(self):
+        self.user = self.create_user(data=self.user_data)
+        self.cardgroup = self.create_cardgroup(data=self.cardgroup_data, user=self.user)
+        self.card = self.create_card(data=self.card_data, cardgroup=self.cardgroup)
+        self.response = self.client.login(username=self.user_data['username'], password=self.user_data['password'])
+
+
+    def test_show_card_for_study(self):
+    # sử dụng method GET
+        response = self.client.get(
+            path=reverse('cardgroups:study_group', args=[self.cardgroup.pk])
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'cardgroups/study.html')
+        self.assertTemplateUsed(response, 'cardgroups/show_card_in_study_screen.html')
+        session = self.client.session
+        cards = self.card_model.objects.all()
+        self.assertEqual(len(session['data']), cards.count())
+
+    # sử dụng method POST
+        response = self.client.post(
+            path=reverse('cardgroups:study_group', args=[self.cardgroup.pk]),
+            data={'new_study_duration': 10}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'cardgroups/study.html')
+        self.assertTemplateUsed(response, 'cardgroups/show_card_in_study_screen.html')
+        session = self.client.session
+        cards = self.card_model.objects.all()     
+        self.assertEqual(len(session['data']), cards.count())
+        self.assertTrue(session.get('card'))
+        self.assertTrue(session.get('expire_date'))
+    

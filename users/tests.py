@@ -3,17 +3,35 @@ from django.test import Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from users.forms import ProfileForm
+from CardGroups.models import CardGroup
+from Cards.models import Card
+from datetime import datetime, time, timezone, timedelta
+
+
 
 class SetUp(TestCase):
-    user_model = get_user_model()
     client = Client()
+    user_model = get_user_model()
+    cardgroup_model = CardGroup
+    card_model = Card
 
+    cardgroup_data = {
+        'name': 'test_cardgroup',
+        'study_duration': timedelta(minutes=12),
+        'last_study_at': datetime(2020, 12, 31, 20, 30),
+        'study_count': 10
+    }
     user_data = {
         'username': 'test',
         'email': 'test@gmail.com',
         'password': 'test123456',
         'avatar': 'images/avatar_test.jpg'
     }
+    card_data = {
+        'front': 'hello',
+        'back':'chào'
+    }
+
 
     def create_user(self, data):
         if data is None:
@@ -26,6 +44,30 @@ class SetUp(TestCase):
         user.save()
         return user
 
+    
+
+    def create_cardgroup(self, data, user):
+        if data is None:
+            raise ValueError('data phải có dữ liệu')
+        cardgroup = self.cardgroup_model()
+        cardgroup.user = user
+        cardgroup.name = data.get('name')
+        cardgroup.study_duration = data.get('study_duration')
+        cardgroup.study_duration = data.get('study_duration')
+        cardgroup.save()
+        return cardgroup
+    
+    
+
+    def create_card(self, data, cardgroup):
+        if data is None:
+            raise ValueError('data phải có dữ liệu')
+        card = self.card_model()
+        card.card_group = cardgroup
+        card.front = data.get('front')
+        card.back = data.get('back')
+        card.save()
+        return card
 
 
 
