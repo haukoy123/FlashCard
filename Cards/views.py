@@ -57,7 +57,7 @@ def DeleteCard(request, id_group, id_card):
 
 
 @login_required()
-def UpdateCard(request, id_group, id_card, page):
+def UpdateCard(request, id_group, id_card, page, limit):
     instance = get_object_or_404(Card, pk=id_card, card_group_id=id_group, card_group__user=request.user)
     if request.method == 'POST':
         form = CardForm(instance=instance, data={**request.POST.dict(), 'card_group': id_group})
@@ -66,4 +66,4 @@ def UpdateCard(request, id_group, id_card, page):
         else:
             messages.error(request, 'Cập nhật card thất bại')
 
-    return redirect(reverse('cardgroups:group_details', args=[id_group]) + '?page=' + str(page))
+    return redirect(reverse('cardgroups:group_details', args=[id_group]) + '?page=' + str(page) + '&limit=' + str(limit))

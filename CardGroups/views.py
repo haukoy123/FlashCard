@@ -76,13 +76,17 @@ class UpdateGroup(generic.UpdateView):
         return cards
 
 
-    def get_card_paginator(self):
+    def get_card_paginator(self, limit):
 
-        return Paginator(self.get_cards(), 2)
+        return Paginator(self.get_cards(), limit)
 
 
     def get_card_page(self):
-        card_paginator = self.get_card_paginator()
+        try:
+            limit = self.request.GET['limit']
+        except KeyError:
+            limit = 5
+        card_paginator = self.get_card_paginator(limit)
         if self.request.GET.get('page'):
             try:
                 page_number = int(self.request.GET.get('page'))
@@ -116,19 +120,20 @@ def StudyView(request, pk):
     
     expire_date = set_expire_date(request, card_group)
     cards = Card.objects.filter(card_group_id=pk, card_group__user=request.user)
-
+    study_type = set_study_type(request, pk)
     if not cards.exists():
         messages.error(request, 'Không có card để học. Vui lòng thêm card')
         return redirect(reverse('cardgroups:group_details', args=[pk]))
 
     if request.method == 'GET':
-         expire_date = set_expire_date(request, card_group)
+        expire_date = set_expire_date(request, card_group)
+    
         # return redirect('cardgroups:group_details', pk)
     update_card_group_last(card_group)
     # cards = get_list_or_404(Card, card_group_id=pk, card_group__user=request.user)
     cards = list(cards)
     random.shuffle(cards)
-
+    set_session_study_type(request, study_type)
     set_session_data(request, cards)
     index = index_of_selected_card(request)
     set_session_card(request, index)
@@ -171,10 +176,18 @@ def set_session_data(request, cards):
     request.session['data'] = data
 
 
+def set_session_study_type(request, study_type):
+    request.session['study_type'] = study_type
+
+
 def set_session_card(request, index):
     data = request.session.get('data')
     card = data[index]['card'].copy()
-    face_to_answer = random.choice(['front', 'back'])
+    study_type = request.session.get('study_type')
+    if study_type == 'front':
+        face_to_answer = 'back'
+    else:
+        face_to_answer = random.choice(['front', 'back'])
     card.pop(face_to_answer)
     start_time = timezone.now()
 
@@ -230,6 +243,19 @@ def check_session(request, pk):
         if expire_date > timezone.now():
             return True
     return False
+
+
+def set_study_type(request, pk):
+    try:
+        study_type = request.POST['study_type']
+    except KeyError:
+        study_type = 'shuffle'
+    
+    if study_type not in ['shuffle', 'front']:
+        messages.error(request, 'Ôn tập thất bại. Không có kiểu ôn tập là:' + str(study_type))
+        return redirect(reverse('cardgroups:group_details', args=[pk])) 
+
+    return study_type
 
 
 def set_expire_date(request, card_group):
@@ -363,7 +389,7 @@ def EndStudy(request, pk):
             'answered_wrong': 0
         }
 
-    for key in ['card', 'data', 'statistics', 'expire_date']:
+    for key in ['card', 'data', 'statistics', 'expire_date', 'study_type']:
         if key in request.session:
             del request.session[key]
 

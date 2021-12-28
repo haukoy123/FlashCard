@@ -92,10 +92,19 @@
                     <form action="{% url 'cardgroups:study_group' cardgroup.pk %}" method="post">
                         {% csrf_token %}
                         <div class="mb-3 d-inline-block w-100">
-                            <label for="id_new_study_duration">Thời gian ôn bài(phút):</label>
-
-                            <input type="number" name="new_study_duration" class="form-control w-25 float-end py-0"
-                                id="id_new_study_duration" value="{{ cardgroup.study_duration|minutes }}">
+                            <div class="mb-3">
+                                <label for="id_new_study_duration">Thời gian ôn bài(phút):</label>
+                                <input type="number" name="new_study_duration" class="form-control w-25 float-end py-0" id="id_new_study_duration"
+                                    value="{{ cardgroup.study_duration|minutes }}">
+                            </div>
+                            <div>
+                                <label for="id_study_type">Kiểu ôn tập:</label>
+                                <select class="form-select w-50 float-end py-0" name="study_type">
+                                    <option value="shuffle" selected="selected">Hỏi hai mặt</option>
+                                    <option value="front">Hỏi mặt trước</option>
+                                </select>
+                            </div>
+                            
                         </div>
                         <button type="submit" class="btn btn-success w-100">Ôn bài</button>
                     </form>
@@ -106,6 +115,16 @@
                     Danh sách card
                     <a href="{% url 'cards:create_card' cardgroup.pk 'begin' %}" class="float-end text-black"
                         data-bs-toggle="tooltip" title="Thêm card"><i class="fas fa-plus"></i></a>
+                </div>
+                <div class="px-3 mb-2">
+                    <form action="" method="get" id="pagination">
+                        <span class="fw-bold">Số card hiển thị:</span>
+                        <select class="ms-3 form-select limit py-0 d-inline-block" name="limit">
+                            <option value="5" {% if cards_page.paginator.per_page == 5 %} selected="selected" {% endif %}>5</option>
+                            <option value="10" {% if cards_page.paginator.per_page == 10 %} selected="selected" {% endif %}>10</option>
+                            <option value="20" {% if cards_page.paginator.per_page == 20 %} selected="selected" {% endif %}>20</option>
+                        </select>
+                    </form>
                 </div>
                 <div class="px-3">
                     {% for card in cards_page %}
@@ -181,7 +200,7 @@
                                     aria-label="Close"></button>
                             </div>
                             <form
-                                action="{% url 'cards:update_card' cardgroup.pk card_form.instance.pk cards_page.number %}"
+                                action="{% url 'cards:update_card' cardgroup.pk card_form.instance.pk cards_page.number cards_page.paginator.per_page %}"
                                 method="post">
                                 {% csrf_token %}
                                 <div class="modal-body">
@@ -210,19 +229,19 @@
                         <ul class="pagination justify-content-center">
                             {% if cards_page.has_previous %}
                             <li class="page-item">
-                                <a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">First</a>
+                                <a class="page-link" href="?page=1&limit={{ cards_page.paginator.per_page }}" tabindex="-1" aria-disabled="true">First</a>
                             </li>
                             {% if cards_page.has_next is False %}
                             {% if cards_page.previous_page_number|sub:1 > 0 %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ cards_page.previous_page_number|sub:1 }}">
+                                <a class="page-link" href="?page={{ cards_page.previous_page_number|sub:1 }}&limit={{ cards_page.paginator.per_page }}">
                                     {{cards_page.previous_page_number|sub:1 }}
                                 </a>
                             </li>
                             {% endif %}
                             {% endif %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ cards_page.previous_page_number }}">
+                                <a class="page-link" href="?page={{ cards_page.previous_page_number }}&limit={{ cards_page.paginator.per_page }}">
                                     {{cards_page.previous_page_number }}
                                 </a>
                             </li>
@@ -233,28 +252,28 @@
                             {% endif %}
 
                             <li class="page-item">
-                                <a class="page-link background-card-header" href="?page={{ cards_page.number }}">
+                                <a class="page-link background-card-header" href="?page={{ cards_page.number }}&limit={{ cards_page.paginator.per_page }}">
                                     {{cards_page.number }}
                                 </a>
                             </li>
 
                             {% if cards_page.has_next %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ cards_page.next_page_number }}">
+                                <a class="page-link" href="?page={{ cards_page.next_page_number }}&limit={{ cards_page.paginator.per_page }}">
                                     {{cards_page.next_page_number }}
                                 </a>
                             </li>
                             {% if cards_page.has_previous is False %}
                             {% if cards_page.next_page_number|add:1 <= cards_page.paginator.num_pages %} <li
                                 class="page-item">
-                                <a class="page-link" href="?page={{ cards_page.next_page_number|add:1 }}">
+                                <a class="page-link" href="?page={{ cards_page.next_page_number|add:1 }}&limit={{ cards_page.paginator.per_page }}">
                                     {{cards_page.next_page_number|add:1 }}
                                 </a>
                                 </li>
                                 {% endif %}
                                 {% endif %}
                                 <li class="page-item">
-                                    <a class="page-link" href="?page={{ cards_page.paginator.num_pages }}">Last</a>
+                                    <a class="page-link" href="?page={{ cards_page.paginator.num_pages }}&limit={{ cards_page.paginator.per_page }}">Last</a>
                                 </li>
                                 {% else %}
                                 <li class="page-item disabled">

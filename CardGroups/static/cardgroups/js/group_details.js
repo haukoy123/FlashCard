@@ -3,6 +3,8 @@ $(document).ready(function(){
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
     })
+
+    
 })
 
 
@@ -14,4 +16,10 @@ $('.btn-edit').on('click', function() {
 $('.btn-close').on('click', function() {
     $('#group-details').show();
     $('#edit-group').hide();
+})
+
+
+$(".limit").on('change', function()  {
+    // console.log('hello')
+    $('#pagination').submit();
 })
