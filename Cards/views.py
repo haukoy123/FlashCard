@@ -29,6 +29,7 @@ class CreateCard(generic.CreateView):
             return redirect('cards:create_card', self.kwargs['pk'], 'begin')
 
     def get_success_url(self):
+        messages.success(self.request, 'Chúc mừng. Bạn đã tạo card thành công')
         if self.kwargs['btn'] == 'continue':
             return reverse('cards:create_card', args=[self.kwargs['pk'], 'begin'])
         else:

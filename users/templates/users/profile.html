@@ -26,7 +26,9 @@
                         {% if form.instance.avatar %}
                         <img id='get_avatar' src="{{ form.instance.avatar.url }}" alt="" width='250px' height="250px">
                         {% else %}
-                        <img id="get_avatar" class="bg-white mb-3" src="" width='250px' height="250px" />
+                        <img id="get_avatar" class="bg-white mb-3"
+                            src="{% static 'public/images/avatar.jpg' %}" width='250px'
+                            height="250px" />
                         {% endif %}
                         <div class="mt-1">Ảnh đại diện</div>
                     </div>

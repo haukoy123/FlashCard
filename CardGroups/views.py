@@ -189,13 +189,22 @@ def set_session_expire_date(request, expire_date):
 
 
 def set_session_statistics(request, result=None):
-    answered_correctly = 0
-    answered_wrong = 0
+
     if result is not None:
+        try:
+            answered_correctly = request.session['statistics']['answered_correctly']
+            answered_wrong = request.session['statistics']['answered_wrong']
+        except KeyError:
+            answered_correctly = 0
+            answered_wrong = 0
+            
         if result:
             answered_correctly += 1
         else:
             answered_wrong += 1
+    else:
+        answered_correctly = 0
+        answered_wrong = 0
 
     statistics = {
         'answered_correctly': answered_correctly,

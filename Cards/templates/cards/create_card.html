@@ -43,7 +43,7 @@
             {% endif %}
         </div>
         <div class="text-center">
-            <button formaction="{% url 'cards:create_card' pk=group.pk btn='continue' %}" type="submit"
+            <button id="btn_continue" formaction="{% url 'cards:create_card' pk=group.pk btn='continue' %}" type="submit"
                 class="btn bg-primary btn-width text-white">Thêm card</button>
             <button id="btn_done" formaction="{% url 'cards:create_card' pk=group.pk btn='done' %}" type="submit"
                 class="btn bg-success btn-width text-white display-none">Xong</button>
@@ -55,6 +55,7 @@
             </div>
         </div>
     </form>
+    
 </div>
 <script src="{% static 'cards/js/create_card.js' %}"></script>
 {% endblock%}

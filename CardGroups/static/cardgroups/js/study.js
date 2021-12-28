@@ -67,5 +67,5 @@ $('.txt_keyboard_events').on('keydown',function (e) {
 
 
 $(".txt_keyboard_events").on("keydown", function(){
-    $('.txt_keyboard_events').popover('show');
+    $(this).popover('show');
 });

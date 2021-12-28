@@ -14,11 +14,24 @@ class CardForm(forms.ModelForm):
         widgets = {
             'front': forms.Textarea(attrs={
                 'class': 'form-control input_card',
-                'rows':'5'
+                'rows':'5',
+                'data-bs-trigger': 'focus',
+                'data-bs-toggle': 'popover',
+                'data-bs-content': '''- Ctrl + Enter nếu card này là card cuối cùng.
+                                    <br />
+                                    - AltKey + Enter nếu bạn muốn thêm nhiều card khác.''',
+                'data-bs-html': 'true'
+            
             }),
             'back': forms.Textarea(attrs={
                 'class': 'form-control input_card',
-                'rows':'5'
+                'rows':'5',
+                'data-bs-trigger': 'focus',
+                'data-bs-toggle': 'popover',
+                'data-bs-content': '''- Ctrl + Enter nếu card này là card cuối cùng.
+                                    <br />
+                                    - AltKey + Enter nếu bạn muốn thêm nhiều card khác.''',
+                'data-bs-html': 'true'
             }),
             'card_group': forms.TextInput(attrs={'hidden': 'True;'})
         }

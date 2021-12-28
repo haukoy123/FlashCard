@@ -2,7 +2,9 @@
 
 <div class="d-flex justify-content-between mb-3" style="background: #004aad;">
     <div class="my-auto">
-        <img class="img-width" src="{% static 'public/images/Flashcard.png' %}" alt="">
+        <a href="{% url 'cardgroups:learn' %}">
+            <img class="img-width" src="{% static 'public/images/Flashcard.png' %}" alt="">
+        </a>    
     </div>
     <div class="p-3">
         <a type="button" class="btn btn-light" style="background: #0c0c8a; color: white; border: 0px;" href="{% url 'users:login' %}">

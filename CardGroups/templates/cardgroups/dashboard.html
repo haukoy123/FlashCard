@@ -19,15 +19,20 @@
                 class="fas fa-plus"></i> Tạo Chồng</a>
     </div>
     <div class="container">
-        <div class="d-flex justify-content-center">
-            <div class="text-center mb-3">
-                <div class="h3 fw-bold mb-3">DASHBOARD</div>
+        <div class="col-md-5 text-center mb-3 mx-auto">
+            <div class="h3 fw-bold mb-3">DASHBOARD</div>
                 <form method="get">
-                    <div class="flex-nowrap mb-3 input-group">
+                    <div class="mb-3 input-group">
                         <input type="search" name="group" class="form-control w-search">
                         <button type="submit" class="btn btn-primary px-4"><i class="fas fa-search"></i></button>
                     </div>
                 </form>
+                <div class="">
+                    <a href="{% url 'cardgroups:create_group' %}" class="btn btn-primary fw-bold"><i
+                        class="fas fa-plus"></i> Tạo Chồng</a>
+                </div>
+               
+                
             </div>
         </div>
 
