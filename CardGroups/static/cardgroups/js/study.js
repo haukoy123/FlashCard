@@ -6,6 +6,9 @@ $("#next-card").on("click", function() {
         url: $url,
         // data: "data",
         success: ShowCard,
+        error: function () {
+            alert("Yêu cầu thất bại!\nBạn vui lòng đăng nhập lại để sử dụng tiếp.\nHãy liên hệ với chúng tối nếu bạn vẫn xảy ra trường hợp này.");
+        }
     });
 })
 
@@ -22,9 +25,12 @@ $("#check-result").on("click", function() {
     $url = $('#check-card-url').data('url');
     $.ajax({
         type: "post",
-        url: $url,
+        url: 'http://127.0.0.1:8000/cardgroups/25/study/gsdfgd/',
         data: $('#form-check-result').serialize(),
         success: ShowResult,
+        error: function () {
+            alert("Yêu cầu thất bại!\nBạn vui lòng đăng nhập lại để sử dụng tiếp.\nHãy liên hệ với chúng tối nếu bạn vẫn xảy ra trường hợp này.");
+        }
     });
 })
 
@@ -45,6 +51,9 @@ $("#confirm-end-study").on("click", function() {
         url: $url,
         // data: "data",
         success: ShowCard,
+        error: function () {
+            alert("Yêu cầu thất bại!\nBạn vui lòng đăng nhập lại để sử dụng tiếp.\nHãy liên hệ với chúng tối nếu bạn vẫn xảy ra trường hợp này.");
+        }
     });
     $('#modal-end-study').modal('hide');
 })
