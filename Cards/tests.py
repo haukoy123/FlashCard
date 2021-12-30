@@ -66,10 +66,10 @@ class CardTestCase(SetUp):
             'back': 'chào'
         }
         response = self.client.post(
-            path=reverse('cards:update_card', args=[self.cardgroup.pk, self.card.pk, 1]),
+            path=reverse('cards:update_card', args=[self.cardgroup.pk, self.card.pk, 1, 5]),
             data = data
         )
-        self.assertRedirects(response, reverse('cardgroups:group_details', args=[self.cardgroup.pk]) + '?page=' + str(1), 302, 200)
+        self.assertRedirects(response, reverse('cardgroups:group_details', args=[self.cardgroup.pk]) + '?page=' + str(1) + '&limit=5', 302, 200)
         card = self.card_model.objects.get(pk=self.card.pk)
         self.assertEqual(card.front, data['front'])
 
@@ -79,7 +79,7 @@ class CardTestCase(SetUp):
         front_before_update = self.card.front
         back_before_update = self.card.back
         response = self.client.post(
-            path=reverse('cards:update_card', args=[self.cardgroup.pk, self.card.pk, 1]),
+            path=reverse('cards:update_card', args=[self.cardgroup.pk, self.card.pk, 1, 5]),
             data = {'front': '', 'back': ''}
         )
         card = self.card_model.objects.get(pk=self.card.pk)
