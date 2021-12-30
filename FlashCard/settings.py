@@ -12,8 +12,11 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+from email.utils import getaddresses
 
 load_dotenv()
+
+ADMINS = getaddresses(os.getenv('ADMINS', '').split(','))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

@@ -5,18 +5,22 @@ from users.forms import UserForm, LoginForm, PasswordChangeForm, ProfileForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 
 def LoginView(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
-        email_regex = re.compile(r"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$")
-        if email_regex.match(request.POST['username']):
+        try:
+            validate_email(request.POST['username'])
+        except ValidationError:
+            username = request.POST['username']
+        else:
             try:
                 username = get_user_model().objects.get(email=request.POST['username']).username
                 form = LoginForm({'username':username, 'password': request.POST['password']})
-            except username.DoesNotExist as e:
+            except get_user_model().DoesNotExist:
                 form.add_error('__all__', 'Tài khoản hoặc mật khẩu không chính xác!')
 
         if form.is_valid():
