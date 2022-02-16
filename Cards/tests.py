@@ -28,25 +28,25 @@ class CardTestCase(SetUp):
 
     def test_create_card_successful(self):
 
-    # tạo card ở trang tạo card
-    # mục đích: tiếp tục tạo card mới
+        # tạo card ở trang tạo card
+        # mục đích: tiếp tục tạo card mới
         response = self.client.post(
             path=reverse('cards:create_card', args=[self.cardgroup.pk, 'continue']),
             data = {'front': 'white', 'back': 'trắng'}
         )
         cards = self.card_model.objects.all()
         self.assertRedirects(response, reverse('cards:create_card', args=[self.cardgroup.pk, 'begin']), 302, 200)
-        self.assertEqual(cards.count(), 2)
+        self.assertEqual(len(cards), 2)
 
-    # tạo card chuyển về trang chi tiết chồng card
-    # mục đích: không muốn thêm card mới
+        # tạo card chuyển về trang chi tiết chồng card
+        # mục đích: không muốn thêm card mới
         response = self.client.post(
             path=reverse('cards:create_card', args=[self.cardgroup.pk, 'done']),
             data = {'front': 'red', 'back': 'đỏ'}
         )
         cards = self.card_model.objects.all()
         self.assertRedirects(response, reverse('cardgroups:group_details', args=[self.cardgroup.pk]), 302, 200)
-        self.assertEqual(cards.count(), 3)
+        self.assertEqual(len(cards), 3)
 
 
     def test_create_card_failed(self):
@@ -95,5 +95,5 @@ class CardTestCase(SetUp):
         )
 
         card = self.card_model.objects.filter(pk=card_pk)
-        self.assertEqual(0, card.count())
+        self.assertEqual(0, len(card))
         self.assertRedirects(response, reverse('cardgroups:group_details', args=[cardgroup_pk]), 302, 200)

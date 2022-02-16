@@ -74,7 +74,7 @@ class SetUp(TestCase):
 class LoginAndLogoutTestCase(SetUp):
 
     def setUp(self):
-        user = self.create_user(data=self.user_data)
+        self.user = self.create_user(data=self.user_data)
 
 
     def test_get_login_register_page(self):
@@ -89,13 +89,13 @@ class LoginAndLogoutTestCase(SetUp):
 
 
     def test_incorrect_login(self):
-    # thiếu username/email
+        # thiếu username/email
         response = self.client.post(reverse('users:login'), {'username': '', 'password': 'test123456'})
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['login_form'].is_valid())
         self.assertTrue(response.context['login_form'].has_error('username'))
 
-    # sai username/email/password
+        # sai username/email/password
         response = self.client.post(reverse('users:login'), {'username': 'no name', 'password': 'test123456'})
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['login_form'].is_valid())
@@ -108,7 +108,7 @@ class LoginAndLogoutTestCase(SetUp):
 class RegisterTestCase(SetUp):
 
     def setUp(self):
-        user = self.create_user(data=self.user_data)
+        self.user = self.create_user(data=self.user_data)
 
 
     def test_registration_successful(self):
@@ -122,7 +122,7 @@ class RegisterTestCase(SetUp):
         )
         user = get_user_model().objects.filter(username='test1')
         self.assertRedirects(response, reverse('cardgroups:learn'), 302, 200)
-        self.assertEqual(1, user.count())
+        self.assertEqual(1, len(user))
         self.assertTrue(user[0].check_password('test123456'))
 
 
@@ -180,7 +180,7 @@ class ProfileTestCase(SetUp):
             )
         self.assertRedirects(response, reverse('users:profile'), 302, 200)
         updated_user = get_user_model().objects.filter(username='test_update')
-        self.assertEqual(1, updated_user.count())
+        self.assertEqual(1, len(updated_user))
         self.assertNotEqual(user, updated_user)
 
 
@@ -207,21 +207,27 @@ class PasswordChangeTestCase(SetUp):
 
     def test_password_change_successful(self):
         self.assertTrue(self.response)
-        response = self.client.post(reverse('users:password-change'), {'current_password': self.user_data['password'], 'password': 'changed123456'})
+        response = self.client.post(reverse('users:password-change'), {
+            'current_password': self.user_data['password'],
+            'password': 'changed123456'
+        })
         self.assertRedirects(response, reverse('cardgroups:learn'), 302, 200)
         user = get_user_model().objects.get(username='test')
         self.assertTrue(user.check_password('changed123456'))
 
 
     def test_password_change_failed(self):
-    # nhập mật khẩu hiện tại sai
+        # nhập mật khẩu hiện tại sai
         self.assertTrue(self.response)
-        response = self.client.post(reverse('users:password-change'), {'current_password': '123456789', 'password': 'changed123456'})
+        response = self.client.post(reverse('users:password-change'), {
+            'current_password': '123456789',
+            'password': 'changed123456'
+        })
         self.assertTrue(response.status_code, 200)
         self.assertFalse(response.context['form'].is_valid())
         self.assertTrue(response.context['form'].has_error('current_password'))
 
-    # mật khẩu mới yếu
+        # mật khẩu mới yếu
         response = self.client.post(reverse('users:password-change'), {'current_password': 'test123456', 'password': '123'})
         self.assertTrue(response.status_code, 200)
         self.assertFalse(response.context['form'].is_valid())
