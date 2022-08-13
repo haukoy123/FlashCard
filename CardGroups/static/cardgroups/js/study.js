@@ -25,7 +25,7 @@ $("#check-result").on("click", function() {
     $url = $('#check-card-url').data('url');
     $.ajax({
         type: "post",
-        url: 'http://127.0.0.1:8000/cardgroups/25/study/gsdfgd/',
+        url: $url,
         data: $('#form-check-result').serialize(),
         success: ShowResult,
         error: function () {
