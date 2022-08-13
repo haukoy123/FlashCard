@@ -44,7 +44,7 @@ class SetUp(TestCase):
         user.save()
         return user
 
-    
+
 
     def create_cardgroup(self, data, user):
         if data is None:
@@ -56,8 +56,8 @@ class SetUp(TestCase):
         cardgroup.study_duration = data.get('study_duration')
         cardgroup.save()
         return cardgroup
-    
-    
+
+
 
     def create_card(self, data, cardgroup):
         if data is None:
@@ -169,7 +169,7 @@ class ProfileTestCase(SetUp):
         self.assertTrue(self.response)
         user = get_user_model().objects.get(username=self.user_data['username'])
 
-        with open('static/public/images/FlashCard.png', 'rb') as img:
+        with open('static/public/images/flash_card.png', 'rb') as img:
             response = self.client.post(
                 path=reverse('users:profile'),
                 data={
